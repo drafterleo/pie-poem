@@ -6,17 +6,24 @@ import random as rnd
 # http://www.codeisart.ru/blog/python-shingles-algorithm/
 def canonize_words(words: list) -> list:
     stop_words = ('это', 'как', 'то', 'так', 'что', 'кто', 'где'
-                  'и', 'в', 'во', 'над', 'к', 'до', 'на', 'но', 'за',
+                  'и', 'в', 'во', 'над', 'под', 'к', 'до', 'на',  'за',
                   'с', 'со', 'от', 'по', 'у', 'из',
-                  'не', 'а', 'и', 'или', 'без', 'для', 'о', 'об',
-                  'ну', 'бы', 'б' 'ли', 'же',
+                  'не', 'ни', 'но', 'а', 'и', 'или', 'без', 'для', 'о', 'об',
+                  'ну', 'бы', 'б' 'ли', 'же', 'нибудь', 'либо', 'лишь', 'только',
                   'я', 'мы', 'ты', 'вы', 'он', 'она', 'они', 'оно',
-                  'быть',
-                  'олег', 'оксана', 'илья', 'геннадий', 'николай', 'зухра',
-                  'ольга', 'максим', 'антон', 'кирилл', 'иван')
+                  'быть')
     morph = pymorphy2.MorphAnalyzer()
-    return [w for w in [morph.parse(i)[0].normal_form for i in words]
-            if w not in stop_words]
+    normalized = []
+    for i in words:
+        forms = morph.parse(i)
+        try:
+            form = max(forms, key=lambda x: (x.score, x.methods_stack[0][2]))
+        except Exception:
+            form = forms[0]
+            print(form)
+        if not ('Name' in form.tag):
+            normalized.append(form.normal_form)
+    return [w for w in normalized if w not in stop_words]
 
 
 def read_poems(file_name: str) -> list:
