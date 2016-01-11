@@ -13,7 +13,7 @@ def canonize_words(words: list) -> list:
                   'я', 'мы', 'ты', 'вы', 'он', 'она', 'они', 'оно',
                   'быть',
                   'олег', 'оксана', 'илья', 'геннадий', 'николай', 'зухра',
-                  'ольга', 'максим', 'антон', 'кирилл', 'иван' )
+                  'ольга', 'максим', 'антон', 'кирилл', 'иван')
     morph = pymorphy2.MorphAnalyzer()
     return [w for w in [morph.parse(i)[0].normal_form for i in words]
             if w not in stop_words]
