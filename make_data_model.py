@@ -15,13 +15,8 @@ def canonize_words(words: list) -> list:
         except Exception:
             form = forms[0]
             print(form)
-        if not ('Name' in form.tag or
-                'PREP' in form.tag or
-                'CONJ' in form.tag or
-                'PRCL' in form.tag or
-                # 'ADJF' in form.tag or
-                'UNKN' in form.tag or
-                'NPRO' in form.tag):
+        if not (form.tag.POS in ['PREP', 'CONJ', 'PRCL', 'NPRO']
+                or 'Name' in form.tag or 'UNKN' in form.tag):  # 'ADJF'
             normalized.append(form.normal_form)
     return normalized  # [w for w in normalized if w not in stop_words]
 
