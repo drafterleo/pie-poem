@@ -4,8 +4,9 @@ import random as rnd
 
 # http://textmechanic.com/text-tools/basic-text-tools/remove-duplicate-lines/
 # http://www.codeisart.ru/blog/python-shingles-algorithm/
-def canonize_words(words: list) -> list:
-    # stop_words = ('быть')
+def canonize_words(words):
+    stop_words = ('быть', 'мой', 'наш', 'ваш', 'их', 'его', 'её', 'их',
+                  'этот', 'тот', 'где', 'который')
     morph = pymorphy2.MorphAnalyzer()
     normalized = []
     for i in words:
@@ -15,8 +16,10 @@ def canonize_words(words: list) -> list:
         except Exception:
             form = forms[0]
             print(form)
-        if not (form.tag.POS in ['PREP', 'CONJ', 'PRCL', 'NPRO']
-                or 'Name' in form.tag or 'UNKN' in form.tag):  # 'ADJF'
+        if not (form.tag.POS in ['PREP', 'CONJ', 'PRCL', 'NPRO', 'NUMR']
+                or 'Name' in form.tag
+                or 'UNKN' in form.tag
+                or form.normal_form in stop_words):  # 'ADJF'
             normalized.append(form.normal_form)
     return normalized  # [w for w in normalized if w not in stop_words]
 
