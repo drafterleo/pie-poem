@@ -1,10 +1,11 @@
 import pymorphy2
 import random as rnd
+import json
 
 
 # http://textmechanic.com/text-tools/basic-text-tools/remove-duplicate-lines/
 # http://www.codeisart.ru/blog/python-shingles-algorithm/
-def canonize_words(words):
+def canonize_words(words: list) -> list:
     stop_words = ('быть', 'мой', 'наш', 'ваш', 'их', 'его', 'её', 'их',
                   'этот', 'тот', 'где', 'который')
     morph = pymorphy2.MorphAnalyzer()
@@ -52,14 +53,33 @@ def make_bags(texts: list) -> list:
     return bags, vocabulary
 
 
+def make_data_model(file_name: str) -> dict:
+    poems = read_poems("poems.txt")
+    bags, voc = make_bags(poems)
+    return {'poems'     : poems,
+            'bags'      : bags,
+            'vocabulary': voc}
+
+
+def read_data_model(file_name: str) -> dict:
+    file = open(file_name, mode='r', encoding='utf-8')
+    return json.load(file)
+
+
+def write_data_model(file_name: str, data_model: dict):
+    file = open(file_name, mode='w', encoding='utf-8')
+    json.dump(data_model, file, separators=(',', ':'), ensure_ascii=False)
+
+
 if __name__ == "__main__":
     poems = read_poems("poems.txt")
+    print(len(poems))
     poem = rnd.choice(poems)
     print(poem)
     print(canonize_words(poem.split()))
-    bags, voc = make_bags(poems)
-    print(bags)
-    print(voc)
+    data = make_data_model("poems.txt")
+    print(data)
+    write_data_model("data_model.dat", data)
 
 
 
