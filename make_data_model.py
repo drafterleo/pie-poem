@@ -7,7 +7,13 @@ import json
 # http://www.codeisart.ru/blog/python-shingles-algorithm/
 def canonize_words(words: list) -> list:
     stop_words = ('быть', 'мой', 'наш', 'ваш', 'их', 'его', 'её', 'их',
-                  'этот', 'тот', 'где', 'который')
+                  'этот', 'тот', 'где', 'который', 'либо', 'нибудь')
+    grammars = {'NOUN': '_S',
+                'VERB': '_V', 'INFN': '_V', 'GRND': '_V', 'PRTF': '_V', 'PRTS': '_V',
+                'ADJF': '_A', 'ADJS': '_A',
+                'ADVB': '_ADV',
+                'PRED': '_PRAEDIC'}
+
     morph = pymorphy2.MorphAnalyzer()
     normalized = []
     for i in words:
@@ -21,7 +27,7 @@ def canonize_words(words: list) -> list:
                 or 'Name' in form.tag
                 or 'UNKN' in form.tag
                 or form.normal_form in stop_words):  # 'ADJF'
-            normalized.append(form.normal_form)
+            normalized.append(form.normal_form + grammars.get(form.tag.POS, ''))
     return normalized  # [w for w in normalized if w not in stop_words]
 
 
@@ -69,6 +75,8 @@ def read_data_model(file_name: str) -> dict:
 def write_data_model(file_name: str, data_model: dict):
     file = open(file_name, mode='w', encoding='utf-8')
     json.dump(data_model, file, separators=(',', ':'), ensure_ascii=False)
+
+
 
 
 if __name__ == "__main__":
