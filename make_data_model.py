@@ -3,6 +3,12 @@ import random as rnd
 import json
 
 
+# data model format
+#   {'poems': [str, str, ...]
+#    'bags': [dict, dict, ...]
+#    'vocabulary': {word: count, ...}
+#
+
 # http://textmechanic.com/text-tools/basic-text-tools/remove-duplicate-lines/
 # http://www.codeisart.ru/blog/python-shingles-algorithm/
 def canonize_words(words: list) -> list:
