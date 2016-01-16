@@ -1,6 +1,6 @@
 import pymorphy2
 import random as rnd
-import json
+import data_model as dm
 
 
 # data model format
@@ -73,17 +73,6 @@ def make_data_model(file_name: str) -> dict:
             'vocabulary': voc}
 
 
-def read_data_model(file_name: str) -> dict:
-    file = open(file_name, mode='r', encoding='utf-8')
-    return json.load(file)
-
-
-def write_data_model(file_name: str, data_model: dict):
-    file = open(file_name, mode='w', encoding='utf-8')
-    json.dump(data_model, file, separators=(',', ':'), ensure_ascii=False)
-
-
-
 
 if __name__ == "__main__":
     poems = read_poems("poems.txt")
@@ -91,9 +80,9 @@ if __name__ == "__main__":
     poem = rnd.choice(poems)
     print(poem)
     print(canonize_words(poem.split()))
-    data = make_data_model("poems.txt")
-    print(data)
-    write_data_model("data_model.dat", data)
+    pmodel = make_data_model("poems.txt")
+    print(pmodel)
+    dm.write_data_model("poems_model.dat", pmodel)
 
 
 

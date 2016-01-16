@@ -1,11 +1,9 @@
 import gensim
 import logging
-
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+import data_model as dm
 
 DATA_DIR = 'C:/TEMP/data/'
-model = gensim.models.Word2Vec.load_word2vec_format(DATA_DIR + "ruscorpora.model.bin.gz",
-                                                    binary=True, encoding='utf-8')
+
 
 # print(model.similarity('муж_S', 'жена_S'))
 # model.most_similar(positive=['человек_S', 'семья_S'], negative=['община_S'])
@@ -38,18 +36,36 @@ def semantic_association(bag: dict, w2v_model) -> list:
     return [a[0] for a in assoc_lst]
 
 
-import make_poems_model as mpm
-pm = mpm.read_data_model("data_model.dat")
-sa = [semantic_association(bag, model) for bag in pm['bags']]
-sd = [semantic_density(bag, model, unknown_coef=-0.001) for bag in pm['bags']]
-sd = enumerate(sd)
-lsd = list(sd)
-lsd.sort(key=lambda x: x[1])
-for i in range(1, 10):
-    print(pm['poems'][lsd[-i][0]], lsd[-i][1])
-    print(pm['bags'][lsd[-i][0]])
-    print(sa[lsd[-i][0]], "\n")
-for i in range(0, 10):
-    print(pm['poems'][lsd[i][0]], lsd[i][1])
-    print(pm['bags'][lsd[i][0]])
-    print(sa[lsd[i][0]], "\n")
+def append_semantics_to_model(file_name: str):
+    pm = dm.read_data_model(file_name)
+
+    print("loading w2v_model...")
+    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+    w2v_model = gensim.models.Word2Vec.load_word2vec_format(DATA_DIR + "ruscorpora.model.bin.gz",
+                                                    binary=True, encoding='utf-8')
+
+    print("adding semantics to poems model...")
+    sd = [semantic_density(bag, w2v_model, unknown_coef=-0.001) for bag in pm['bags']]
+    sa = [semantic_association(bag, w2v_model) for bag in pm['bags']]
+
+    pm['sem_density'] = sd
+    pm['sem_associations'] = sa
+
+    dm.write_data_model(file_name, pm)
+
+    # sd = enumerate(sd)
+    # lsd = list(sd)
+    # lsd.sort(key=lambda x: x[1])
+    # for i in range(1, 10):
+    #     print(pm['poems'][lsd[-i][0]], lsd[-i][1])
+    #     print(pm['bags'][lsd[-i][0]])
+    #     print(sa[lsd[-i][0]], "\n")
+    # for i in range(0, 10):
+    #     print(pm['poems'][lsd[i][0]], lsd[i][1])
+    #     print(pm['bags'][lsd[i][0]])
+    #     print(sa[lsd[i][0]], "\n")
+
+
+# if __name__ == "__main__":
+    # append_semantics_to_model("poems_model.dat")
+
