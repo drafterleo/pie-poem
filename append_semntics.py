@@ -37,6 +37,7 @@ def semantic_association(bag: dict, w2v_model) -> list:
 
 
 def append_semantics_to_model(file_name: str):
+    print("loading poems model...")
     pm = dm.read_data_model(file_name)
 
     print("loading w2v_model...")
@@ -45,16 +46,17 @@ def append_semantics_to_model(file_name: str):
                                                     binary=True, encoding='utf-8')
 
     print("adding semantics to poems model...")
-    sd = [semantic_density(bag, w2v_model, unknown_coef=-0.001) for bag in pm['bags']]
-    sa = [semantic_association(bag, w2v_model) for bag in pm['bags']]
+    sd = [semantic_density(bag, w2v_model, unknown_coef=-0.001)
+          for bag in pm['bags']]
+    sa = [semantic_association(bag, w2v_model)
+          for bag in pm['bags']]
 
     pm['sem_density'] = sd
     pm['sem_associations'] = sa
 
     dm.write_data_model(file_name, pm)
 
-    # sd = enumerate(sd)
-    # lsd = list(sd)
+    # lsd = list(enumerate(sd))
     # lsd.sort(key=lambda x: x[1])
     # for i in range(1, 10):
     #     print(pm['poems'][lsd[-i][0]], lsd[-i][1])
