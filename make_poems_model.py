@@ -56,10 +56,10 @@ def make_bags(texts: list) -> list:
     bags = []
     vocabulary = {}
     for txt in texts:
-        bag = {}
+        bag = []  # {}
         words = canonize_words(txt.split())
         for w in words:
-            bag[w] = bag.get(w, 0) + 1
+            bag.append(w)  # bag[w] = bag.get(w, 0) + 1
             vocabulary[w] = vocabulary.get(w, 0) + 1
         bags.append(bag)
     return bags, vocabulary
