@@ -3,7 +3,7 @@
 import sys
 from PyQt4 import QtGui
 from ui_markupform import Ui_MarkupForm
-import data_model as dm
+import data_model
 
 
 class Window(QtGui.QWidget, Ui_MarkupForm):
@@ -18,7 +18,10 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         self.setWindowTitle("Markup")
 
         self.loadModelBtn.clicked.connect(self.loadModel)
+        self.saveModelBtn.clicked.connect(self.saveModel)
         self.poemNumSpin.valueChanged[str].connect(self.poemSpinValueChanged)
+        self.nextPoemBtn.clicked.connect(self.nextPoem)
+        self.prevPoemBtn.clicked.connect(self.prevPoem)
 
     def poemCount(self):
         return len(self.pmodel['poems'])
@@ -33,9 +36,9 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         self.poemLabel.setText(self.poemByIdx(idx))
 
     def loadModel(self):
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '')
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open Model', '')
         self.modelFileNameLabel.setText(fname)
-        self.pmodel = dm.read_data_model(fname)
+        self.pmodel = data_model.read_data_model(fname)
         if not ('rate' in self.pmodel.keys()):
             self.pmodel['rate'] = [0.0 for _ in range(self.poemCount())]
         self.curr_idx = 0
@@ -44,6 +47,9 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         self.poemNumSpin.setValue(1)
 
     def saveModel(self):
+        fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Model', '')
+        data_model.write_data_model(fname, self.pmodel)
+        self.modelFileNameLabel.setText(fname)
         return
 
     def poemSpinValueChanged(self, val):
@@ -53,9 +59,10 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         self.rateSlider.setValue(self.rateByIdx(self.curr_idx) * self.rateSlider.maximum())
 
     def nextPoem(self):
-        return
+        self.poemNumSpin.stepUp()
+
     def prevPoem(self):
-        return
+        self.poemNumSpin.stepDown()
 
 
 def main():
