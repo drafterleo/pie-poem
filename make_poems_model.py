@@ -73,7 +73,6 @@ def make_data_model(file_name: str) -> dict:
             'vocabulary': voc}
 
 
-
 if __name__ == "__main__":
     poems = read_poems("poems.txt")
     print(len(poems))
