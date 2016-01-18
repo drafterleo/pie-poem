@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+    markupform.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += \
+    markupform.h
 
-FORMS    += mainwindow.ui
+FORMS    += \
+    markupform.ui

@@ -1,19 +1,18 @@
+# pyuic4 markupform.ui >> ui_markupform.py
+
 import sys
 from PyQt4 import QtGui
+from ui_markupform import Ui_MarkupForm
 
-class Window(QtGui.QWidget):
+
+class Window(QtGui.QWidget, Ui_MarkupForm):
 
     def __init__(self):
         super(Window, self).__init__()
+        Ui_MarkupForm.__init__(self)
+        self.setupUi(self)
         self.setGeometry(50, 50, 500, 300)
         self.setWindowTitle("Markup")
-        # self.setWindowIcon(QtGui.QIcon('pythonlogo.png'))
-
-    def paintEvent(self, event):
-        qp = QtGui.QPainter(self)
-        qp.setBrush(QtGui.QColor(00, 00, 00))
-        qp.drawRect(self.rect())
-        qp.end()
 
 
 def main():
@@ -25,3 +24,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
