@@ -5,7 +5,7 @@ import data_model as dm
 
 # data model format
 #   {'poems': [str, str, ...]
-#    'bags': [dict, dict, ...]
+#    'bags': [list, list, ...]
 #    'vocabulary': {word: count, ...}
 #
 
