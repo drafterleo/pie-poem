@@ -7,10 +7,11 @@ import data_model
 
 
 class Window(QtGui.QWidget, Ui_MarkupForm):
-    pmodel = {}
-    curr_idx = 0
 
     def __init__(self):
+        self.pmodel = {}
+        self.curr_idx = 0
+
         super(Window, self).__init__()
         Ui_MarkupForm.__init__(self)
         self.setupUi(self)
