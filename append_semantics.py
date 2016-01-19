@@ -4,7 +4,6 @@ import data_model as dm
 
 WORD2VEC_MODEL_FILE = 'C:/TEMP/data/ruscorpora.model.bin.gz'
 
-
 # print(model.similarity('муж_S', 'жена_S'))
 # model.most_similar(positive=['человек_S', 'семья_S'], negative=['община_S'])
 # model.most_similar(positive=['париж_S', 'германия_S'], negative=['франция_S'])

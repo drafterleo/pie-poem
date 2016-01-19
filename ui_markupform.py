@@ -85,6 +85,7 @@ class Ui_MarkupForm(object):
         self.horizontalLayout_2.addWidget(self.prevPoemBtn)
         self.poemNumSpin = QtGui.QSpinBox(MarkupForm)
         self.poemNumSpin.setAlignment(QtCore.Qt.AlignCenter)
+        self.poemNumSpin.setMaximum(0)
         self.poemNumSpin.setObjectName(_fromUtf8("poemNumSpin"))
         self.horizontalLayout_2.addWidget(self.poemNumSpin)
         self.nextPoemBtn = QtGui.QPushButton(MarkupForm)
@@ -102,7 +103,17 @@ class Ui_MarkupForm(object):
         self.loadModelBtn.setText(_translate("MarkupForm", "Load Model", None))
         self.saveModelBtn.setText(_translate("MarkupForm", "Save Model", None))
         self.poemLabel.setText(_translate("MarkupForm", "TextLabel", None))
-        self.rateLabel.setText(_translate("MarkupForm", "100%", None))
+        self.rateLabel.setText(_translate("MarkupForm", "0%", None))
         self.prevPoemBtn.setText(_translate("MarkupForm", "<<", None))
         self.nextPoemBtn.setText(_translate("MarkupForm", ">>", None))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MarkupForm = QtGui.QWidget()
+    ui = Ui_MarkupForm()
+    ui.setupUi(MarkupForm)
+    MarkupForm.show()
+    sys.exit(app.exec_())
 

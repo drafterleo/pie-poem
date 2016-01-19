@@ -1,4 +1,4 @@
-# pyuic4 markupform.ui >> ui_markupform.py
+# pyuic4 -x markupform.ui -o ui_markupform.py
 
 import sys
 from PyQt4 import QtGui
@@ -18,11 +18,20 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         self.setGeometry(50, 50, 500, 300)
         self.setWindowTitle("Markup")
 
+        self.modelFileNameLabel.setText("...")
+        self.poemLabel.setText("...")
+        self.nextPoemBtn.setEnabled(False)
+        self.prevPoemBtn.setEnabled(False)
+        self.poemNumSpin.setEnabled(False)
+        self.rateSlider.setEnabled(False)
+        self.saveModelBtn.setEnabled(False)
+
         self.loadModelBtn.clicked.connect(self.loadModel)
         self.saveModelBtn.clicked.connect(self.saveModel)
         self.poemNumSpin.valueChanged[str].connect(self.poemSpinValueChanged)
         self.nextPoemBtn.clicked.connect(self.nextPoem)
         self.prevPoemBtn.clicked.connect(self.prevPoem)
+        self.rateSlider.valueChanged[int].connect(self.rateSliderChanged)
 
     def poemCount(self):
         return len(self.pmodel['poems'])
@@ -47,6 +56,13 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         self.poemNumSpin.setMaximum(self.poemCount())
         self.poemNumSpin.setValue(1)
 
+        self.nextPoemBtn.setEnabled(True)
+        self.prevPoemBtn.setEnabled(True)
+        self.poemNumSpin.setEnabled(True)
+        self.rateSlider.setEnabled(True)
+        self.saveModelBtn.setEnabled(True)
+
+
     def saveModel(self):
         fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Model', '')
         data_model.write_data_model(fname, self.pmodel)
@@ -64,6 +80,9 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
 
     def prevPoem(self):
         self.poemNumSpin.stepDown()
+
+    def rateSliderChanged(self, val):
+        self.rateLabel.setText(str(val) + '%')
 
 
 def main():

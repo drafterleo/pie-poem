@@ -1,4 +1,3 @@
-import pymorphy2
 import random as rnd
 import data_model as dm
 
@@ -7,34 +6,9 @@ import data_model as dm
 #   {'poems': [str, str, ...]
 #    'bags': [list, list, ...]
 #    'vocabulary': {word: count, ...}
-#
-
-# http://textmechanic.com/text-tools/basic-text-tools/remove-duplicate-lines/
-# http://www.codeisart.ru/blog/python-shingles-algorithm/
-def canonize_words(words: list) -> list:
-    stop_words = ('быть', 'мой', 'наш', 'ваш', 'их', 'его', 'её', 'их',
-                  'этот', 'тот', 'где', 'который', 'либо', 'нибудь')
-    grammars = {'NOUN': '_S',
-                'VERB': '_V', 'INFN': '_V', 'GRND': '_V', 'PRTF': '_V', 'PRTS': '_V',
-                'ADJF': '_A', 'ADJS': '_A',
-                'ADVB': '_ADV',
-                'PRED': '_PRAEDIC'}
-
-    morph = pymorphy2.MorphAnalyzer()
-    normalized = []
-    for i in words:
-        forms = morph.parse(i)
-        try:
-            form = max(forms, key=lambda x: (x.score, x.methods_stack[0][2]))
-        except Exception:
-            form = forms[0]
-            print(form)
-        if not (form.tag.POS in ['PREP', 'CONJ', 'PRCL', 'NPRO', 'NUMR']
-                or 'Name' in form.tag
-                or 'UNKN' in form.tag
-                or form.normal_form in stop_words):  # 'ADJF'
-            normalized.append(form.normal_form + grammars.get(form.tag.POS, ''))
-    return normalized  # [w for w in normalized if w not in stop_words]
+#    'density': [float, float, ...]    <- append_semantics module
+#    'associations: [list, list, ...]
+#    'rate': [float, float, ...]       <- markupform module
 
 
 def read_poems(file_name: str) -> list:
@@ -45,7 +19,7 @@ def read_poems(file_name: str) -> list:
     for line in lines:
         if len(line.strip()) == 0:
             if len(poem.strip()) > 0:
-                poems.append(poem)
+                poems.append(poem.lower())
                 poem = ""
         else:
             poem += line
@@ -57,7 +31,7 @@ def make_bags(texts: list) -> list:
     vocabulary = {}
     for txt in texts:
         bag = []  # {}
-        words = canonize_words(txt.split())
+        words = dm.canonize_words(txt.split())
         for w in words:
             bag.append(w)  # bag[w] = bag.get(w, 0) + 1
             vocabulary[w] = vocabulary.get(w, 0) + 1
@@ -66,7 +40,7 @@ def make_bags(texts: list) -> list:
 
 
 def make_data_model(file_name: str) -> dict:
-    poems = read_poems("poems.txt")
+    poems = read_poems(file_name)
     bags, voc = make_bags(poems)
     return {'poems'     : poems,
             'bags'      : bags,
@@ -78,7 +52,7 @@ if __name__ == "__main__":
     print(len(poems))
     poem = rnd.choice(poems)
     print(poem)
-    print(canonize_words(poem.split()))
+    print(dm.canonize_words(poem.split()))
     pmodel = make_data_model("poems.txt")
     print(pmodel)
     dm.write_data_model("poems_model.dat", pmodel)

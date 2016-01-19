@@ -105,7 +105,7 @@
            </size>
           </property>
           <property name="text">
-           <string>100%</string>
+           <string>0%</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -155,6 +155,9 @@
       <widget class="QSpinBox" name="poemNumSpin">
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+       <property name="maximum">
+        <number>0</number>
        </property>
       </widget>
      </item>
