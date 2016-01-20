@@ -19,16 +19,13 @@ def load_w2v_model(file_name: str):
     return w2v_model
 
 
-def semantic_density(bag: list, w2v_model, unknown_coef=0.0) -> int:
-    bag_len = len(bag)
-    if bag_len < 2:
-        return 0.0
+def semantic_density(bag: list, w2v_model, unknown_coef=0.0) -> float:
     sim_sum = 0.0
     weight_sum = 0.0
-    for i in range(0, bag_len):
-        for j in range(i+1, bag_len):
+    for i in range(len(bag)):
+        for j in range(i + 1, len(bag)):
             if bag[i] != bag[j]:
-                weight = 1/(j-i)
+                weight = 1 / (j - i)
                 weight_sum += weight
                 try:
                     sim_sum += w2v_model.similarity(bag[i], bag[j]) * weight
@@ -37,48 +34,24 @@ def semantic_density(bag: list, w2v_model, unknown_coef=0.0) -> int:
     return sim_sum / weight_sum
 
 
+def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:
+    sim_sum = 0.0
+    for i in range(len(bag1)):
+        for j in range(len(bag2)):
+            try:
+                sim_sum += w2v_model.similarity(bag1[i], bag2[j])
+            except Exception:
+                sim_sum += unknown_coef
+    return sim_sum / (len(bag1) * len(bag2))
+
+
 def semantic_association(bag: list, w2v_model) -> list:
     positive_lst = [w for w in bag if w in w2v_model.vocab]
     assoc_lst = w2v_model.most_similar(positive=positive_lst, topn=10)
     return [a[0] for a in assoc_lst]
 
 
-def append_semantics_to_model(file_name: str) -> dict:
-    print("loading poems model...")
-    pm = dm.read_data_model(file_name)
-
-    print("loading w2v_model...")
-    w2v_model = load_w2v_model(WORD2VEC_MODEL_FILE)
-
-    print("adding semantics to poems model...")
-    sd = [semantic_density(bag, w2v_model, unknown_coef=-0.001)
-          for bag in pm['bags']]
-    sa = [semantic_association(bag, w2v_model)
-          for bag in pm['bags']]
-
-    pm['density'] = sd
-    pm['associations'] = sa
-
-    dm.write_data_model(file_name, pm)
-    return pm
 
 
-def print_poems_by_density(poems_model: dict):
-    sd = poems_model['density']
-    sa = poems_model['associations']
-    lsd = list(enumerate(sd))
-    lsd.sort(key=lambda x: x[1])
-    for i in range(1, 10):
-        print(poems_model['poems'][lsd[-i][0]], lsd[-i][1])
-        print(poems_model['bags'][lsd[-i][0]])
-        print(sa[lsd[-i][0]], "\n")
-    for i in range(0, 10):
-        print(poems_model['poems'][lsd[i][0]], lsd[i][1])
-        print(poems_model['bags'][lsd[i][0]])
-        print(sa[lsd[i][0]], "\n")
 
-
-if __name__ == "__main__":
-    pm = append_semantics_to_model("poems_model.dat")
-    print_poems_by_density(pm)
 

@@ -1,12 +1,12 @@
 import random as rnd
 import data_model as dm
-
+import semantics as sem
 
 # data model format
 #   {'poems': [str, str, ...]
 #    'bags': [list, list, ...]
 #    'vocabulary': {word: count, ...}
-#    'density': [float, float, ...]    <- append_semantics module
+#    'density': [float, float, ...]
 #    'associations: [list, list, ...]
 #    'rate': [float, float, ...]       <- markupform module
 
@@ -26,7 +26,7 @@ def read_poems(file_name: str) -> list:
     return poems
 
 
-def make_bags(texts: list) -> list:
+def make_bags(texts: list) -> (list, dict):
     bags = []
     vocabulary = {}
     for txt in texts:
@@ -40,12 +40,44 @@ def make_bags(texts: list) -> list:
 
 
 def make_data_model(file_name: str) -> dict:
+    print("making poems model...")
     poems = read_poems(file_name)
     bags, voc = make_bags(poems)
-    return {'poems'     : poems,
-            'bags'      : bags,
-            'vocabulary': voc}
+    print("loading w2v_model...")
+    w2v_model = sem.load_w2v_model(sem.WORD2VEC_MODEL_FILE)
+    print("adding semantics to model...")
+    sd = [sem.semantic_density(bag, w2v_model, unknown_coef=-0.001) for bag in bags]
+    sa = [sem.semantic_association(bag, w2v_model) for bag in bags]
+    rates = [0.0 for _ in range(len(poems))]
+    return {'poems'       : poems,
+            'bags'        : bags,
+            'vocabulary'  : voc,
+            'density'     : sd,
+            'associations': sa,
+            'rates'       : rates}
 
+def print_poems_model(poems_model):
+    print("poems: ", poems_model['poems'])
+    print("bags: ", poems_model['bags'])
+    print("vocabulary: ", poems_model['vocabulary'])
+    print("density: ", poems_model['density'])
+    print("associations: ", poems_model['associations'])
+    print("rates: ", poems_model['rates'])
+
+
+def print_poems_by_density(poems_model: dict):
+    sd = poems_model['density']
+    sa = poems_model['associations']
+    lsd = list(enumerate(sd))
+    lsd.sort(key=lambda x: x[1])
+    for i in range(1, 10):
+        print(poems_model['poems'][lsd[-i][0]], lsd[-i][1])
+        print(poems_model['bags'][lsd[-i][0]])
+        print(sa[lsd[-i][0]], "\n")
+    for i in range(0, 10):
+        print(poems_model['poems'][lsd[i][0]], lsd[i][1])
+        print(poems_model['bags'][lsd[i][0]])
+        print(sa[lsd[i][0]], "\n")
 
 if __name__ == "__main__":
     poems = read_poems("poems.txt")
@@ -53,9 +85,15 @@ if __name__ == "__main__":
     poem = rnd.choice(poems)
     print(poem)
     print(dm.canonize_words(poem.split()))
-    pmodel = make_data_model("poems.txt")
-    print(pmodel)
-    dm.write_data_model("poems_model.dat", pmodel)
+    pm = make_data_model("poems.txt")
+    # print(pm)
+    dm.write_data_model("poems_model.dat", pm)
+    print("done")
+    print_poems_model(pm)
+
+# import data_model as dm
+# pm = dm.read_data_model("poems_model.dat")
+# print_poems_by_density(pm)
 
 
 
