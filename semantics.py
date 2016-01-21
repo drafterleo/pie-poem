@@ -5,14 +5,6 @@ import data_model as dm
 # http://ling.go.mail.ru/static/models/ruscorpora.model.bin.gz
 WORD2VEC_MODEL_FILE = 'C:/TEMP/data/ruscorpora.model.bin.gz'
 
-# print(model.similarity('муж_S', 'жена_S'))
-# model.most_similar(positive=['человек_S', 'семья_S'], negative=['община_S'])
-# model.most_similar(positive=['париж_S', 'германия_S'], negative=['франция_S'])
-# model.most_similar(positive=['москва_S', 'государство_S'], negative=[])
-
-# sentences = [['first sentence'], ['second', 'sentence']]
-# train word2vec on the two sentences
-# model = gensim.models.Word2Vec(sentences, min_count=1)
 
 def load_w2v_model(file_name: str):
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -22,17 +14,19 @@ def load_w2v_model(file_name: str):
 
 def semantic_density(bag: list, w2v_model, unknown_coef=0.0) -> float:
     sim_sum = 0.0
-    weight_sum = 0.0
+    divisor = 0
+    # weight_sum = 0.0
     for i in range(len(bag)):
         for j in range(i + 1, len(bag)):
             if bag[i] != bag[j]:
-                weight = 1 / (j - i)
-                weight_sum += weight
+                divisor += 1
+                # weight = 1 / (j - i)
+                # weight_sum += weight
                 try:
-                    sim_sum += w2v_model.similarity(bag[i], bag[j]) * weight
+                    sim_sum += w2v_model.similarity(bag[i], bag[j]) # * weight
                 except Exception:
-                    sim_sum += unknown_coef * weight
-    return sim_sum / weight_sum
+                    sim_sum += unknown_coef # * weight
+    return sim_sum / divisor # / weight_sum
 
 
 def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:

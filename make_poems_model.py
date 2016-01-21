@@ -8,7 +8,7 @@ import semantics as sem
 #    'vocabulary': {word: count, ...}
 #    'density': [float, float, ...]
 #    'associations: [list, list, ...]
-#    'rate': [float, float, ...]       <- markupform module
+#    'rates': [float, float, ...]       <- markupform module
 
 
 def read_poems(file_name: str) -> list:
@@ -87,8 +87,9 @@ if __name__ == "__main__":
     print(dm.canonize_words(poem.split()))
     pm = make_data_model("poems.txt")
     # print(pm)
-    dm.write_data_model("poems_model.dat", pm)
-    print("done")
+    pm_file = "poems_model.dat"
+    dm.write_data_model(pm_file, pm)
+    print("model was saved to file '%s'" % pm_file)
     print_poems_model(pm)
 
 # import data_model as dm
