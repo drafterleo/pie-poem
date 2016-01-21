@@ -2,7 +2,7 @@ import semantics as sem
 import data_model as dm
 
 
-def similar_poems_idx(poem: str, poem_model, w2v_model, topn=5) ->list:
+def similar_poems_idx(poem: str, poem_model, w2v_model, topn=5) -> list:
     poem_bag = dm.canonize_words(poem.split())
     similars = [(i, sem.semantic_similarity(poem_bag, bag, w2v_model))
                 for i, bag in enumerate(poem_model['bags'])]

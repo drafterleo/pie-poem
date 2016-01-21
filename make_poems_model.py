@@ -33,7 +33,8 @@ def make_bags(texts: list) -> (list, dict):
         bag = []  # {}
         words = dm.canonize_words(txt.split())
         for w in words:
-            bag.append(w)  # bag[w] = bag.get(w, 0) + 1
+            if w not in bag:
+                bag.append(w)  # bag[w] = bag.get(w, 0) + 1
             vocabulary[w] = vocabulary.get(w, 0) + 1
         bags.append(bag)
     return bags, vocabulary
