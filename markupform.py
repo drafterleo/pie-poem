@@ -40,7 +40,7 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         return self.pmodel['poems'][idx]
 
     def rateByIdx(self, idx):
-        return self.pmodel['rate'][idx]
+        return self.pmodel['rates'][idx]
 
     def setPoemByIdx(self, idx):
         self.poemLabel.setText(self.poemByIdx(idx))
@@ -49,8 +49,8 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open Model', '')
         self.modelFileNameLabel.setText(fname)
         self.pmodel = data_model.read_data_model(fname)
-        if not ('rate' in self.pmodel.keys()):
-            self.pmodel['rate'] = [0.0 for _ in range(self.poemCount())]
+        if not ('rates' in self.pmodel.keys()):
+            self.pmodel['rates'] = [0.0 for _ in range(self.poemCount())]
         self.curr_idx = 0
         self.poemNumSpin.setMinimum(1)
         self.poemNumSpin.setMaximum(self.poemCount())
@@ -70,7 +70,7 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
         return
 
     def poemSpinValueChanged(self, val):
-        self.pmodel['rate'][self.curr_idx] = self.rateSlider.value() / self.rateSlider.maximum()
+        self.pmodel['rates'][self.curr_idx] = self.rateSlider.value() / self.rateSlider.maximum()
         self.curr_idx = self.poemNumSpin.value() - 1
         self.setPoemByIdx(self.curr_idx)
         self.rateSlider.setValue(self.rateByIdx(self.curr_idx) * self.rateSlider.maximum())

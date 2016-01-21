@@ -2,6 +2,7 @@ import gensim
 import logging
 import data_model as dm
 
+# http://ling.go.mail.ru/static/models/ruscorpora.model.bin.gz
 WORD2VEC_MODEL_FILE = 'C:/TEMP/data/ruscorpora.model.bin.gz'
 
 # print(model.similarity('муж_S', 'жена_S'))
