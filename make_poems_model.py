@@ -57,6 +57,19 @@ def make_data_model(file_name: str) -> dict:
             'associations': sa,
             'rates'       : rates}
 
+def append_model_to_model(head_model, tail_model):
+    for w in tail_model['vocabulary'].keys():
+        head_model['vocabulary'][w] = head_model['vocabulary'].get(w, 0) + tail_model['vocabulary'][w]
+    for i in range(len(tail_model['poems'])):
+        if tail_model['bags'][i] not in head_model['bags']:
+            head_model['poems'].append(tail_model['poems'][i])
+            head_model['bags'].append(tail_model['bags'][i])
+            head_model['density'].append(tail_model['density'][i])
+            head_model['associations'].append(tail_model['associations'][i])
+            head_model['rates'].append(tail_model['rates'][i])
+        else:
+            print('<!!!>\n', tail_model['poems'][i])
+
 def print_poems_model(poems_model):
     print("poems: ", poems_model['poems'])
     print("bags: ", poems_model['bags'])
