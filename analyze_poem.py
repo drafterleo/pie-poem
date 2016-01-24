@@ -1,5 +1,7 @@
 import semantics as sem
 import data_model as dm
+import random as rnd
+from pprint import pprint
 
 
 def similar_poems_idx(poem: str, poem_model, w2v_model, topn=5) -> list:
@@ -30,6 +32,20 @@ def rate_poem(poem: str, poem_model: dict, w2v_model, nearest=20) -> float:
         return 0.0
 
 
+def print_poems_by_density(poems_model: dict):
+    sd = poems_model['density']
+    sa = poems_model['associations']
+    lsd = list(enumerate(sd))
+    lsd.sort(key=lambda x: x[1])
+    for i in range(1, 10):
+        print(poems_model['poems'][lsd[-i][0]], lsd[-i][1])
+        print(poems_model['bags'][lsd[-i][0]])
+        print(sa[lsd[-i][0]], "\n")
+    for i in range(0, 10):
+        print(poems_model['poems'][lsd[i][0]], lsd[i][1])
+        print(poems_model['bags'][lsd[i][0]])
+        print(sa[lsd[i][0]], "\n")
+
 if __name__ == "__main__":
     test_poems = (
         "мадам а не хотите кофе\n сказал он глядя ей в глаза\n три таракана были против\n пять за\n",
@@ -55,6 +71,8 @@ if __name__ == "__main__":
     )
 
     w2v = sem.load_w2v_model(sem.WORD2VEC_MODEL_FILE)
-    pmodel = dm.read_data_model("poems_model.dat")
-    sim_poems = similar_poems(test_poems[3], pmodel, w2v)
-    print(sim_poems)
+    pm = dm.read_data_model("poems_model.dat")
+    test_poem = rnd.choice(test_poems)
+    sim_poems = similar_poems(test_poem, pm, w2v)
+    print(test_poem)
+    pprint(sim_poems)

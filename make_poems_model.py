@@ -79,20 +79,6 @@ def print_poems_model(poems_model):
     print("rates: ", poems_model['rates'])
 
 
-def print_poems_by_density(poems_model: dict):
-    sd = poems_model['density']
-    sa = poems_model['associations']
-    lsd = list(enumerate(sd))
-    lsd.sort(key=lambda x: x[1])
-    for i in range(1, 10):
-        print(poems_model['poems'][lsd[-i][0]], lsd[-i][1])
-        print(poems_model['bags'][lsd[-i][0]])
-        print(sa[lsd[-i][0]], "\n")
-    for i in range(0, 10):
-        print(poems_model['poems'][lsd[i][0]], lsd[i][1])
-        print(poems_model['bags'][lsd[i][0]])
-        print(sa[lsd[i][0]], "\n")
-
 if __name__ == "__main__":
     poems = read_poems("poems.txt")
     print(len(poems))
