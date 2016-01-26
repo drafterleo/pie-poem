@@ -13,6 +13,7 @@ from analyze_poem import *
 w2v = sem.load_w2v_model("c:/temp/data/ruscorpora.model.bin.gz") # указать путь до word2vec модели
 
 Затем:
+
 pm = dm.read_data_model("poems_model.dat") # загрузить пирожковую модель
 
 pprint(similar_poems("запрос", pm, w2v, topn=5)) # 5 наиболее близких к "запросу" пирожка
