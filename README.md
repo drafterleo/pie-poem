@@ -3,8 +3,11 @@
 Сначала импорты (нужно, чтобы были установлены json, pymorphy2, gensim):
 
 import semantics as sem
+
 import data_model as dm
+
 from pprint import pprint
+
 from analyze_poem import *
 
 Потом вгружаю word2vec модель (занимает некоторое время):
