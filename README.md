@@ -1,4 +1,4 @@
-Чтобы поработать с моделью (poems_model.dat), следует загрузить в консоль питона содержимое console_scripts.py.
+Чтобы поработать с моделью (poems_model.dat), следует загрузить в консоль питона содержимое [console_scripts.py] (https://github.com/drafterleo/pie-poem/blob/master/console_scripts.py)
 
 Сначала импорты (нужно, чтобы были установлены json, pymorphy2, gensim):
 ```python
