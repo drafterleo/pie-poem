@@ -1,3 +1,5 @@
+Пример работы в виде тетрадки IPython: https://github.com/drafterleo/pie-poem/blob/master/example.ipynb
+
 Чтобы поработать с моделью (poems_model.dat), я обычно загружаю в питоновскую консоль содержимое console_scripts.py.
 
 Сначала импорты (нужно, чтобы были установлены json, pymorphy2, gensim):
