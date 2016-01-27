@@ -50,6 +50,7 @@ def make_data_model(file_name: str) -> dict:
     sd = [sem.semantic_density(bag, w2v_model, unknown_coef=-0.001) for bag in bags]
     sa = [sem.semantic_association(bag, w2v_model) for bag in bags]
     rates = [0.0 for _ in range(len(poems))]
+    print("model created")
     return {'poems'       : poems,
             'bags'        : bags,
             'vocabulary'  : voc,
@@ -87,7 +88,7 @@ if __name__ == "__main__":
     print(dm.canonize_words(poem.split()))
     pm = make_data_model("poems.txt")
     # print(pm)
-    pm_file = "poems_model.dat"
+    pm_file = "poems_model_big.dat"
     dm.write_data_model(pm_file, pm)
     print("model was saved to file '%s'" % pm_file)
     print_poems_model(pm)
