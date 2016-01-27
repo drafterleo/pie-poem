@@ -7,7 +7,7 @@ import data_model as dm
 from pprint import pprint
 from analyze_poem import *
 ```
-Потом вгружаю word2vec модель (занимает некоторое время), модели скачивал отсюда: http://ling.go.mail.ru/dsm/ru/about#models
+Потом вгрузить word2vec модель (занимает некоторое время), модели скачивал отсюда: http://ling.go.mail.ru/dsm/ru/about#models
 ```python
 w2v = sem.load_w2v_model("c:/temp/data/ruscorpora.model.bin.gz") # указать путь до word2vec модели
 ```
