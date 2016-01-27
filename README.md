@@ -17,7 +17,7 @@ pm = dm.read_data_model("poems_model.dat") # загрузить пирожков
 pprint(similar_poems("запрос", pm, w2v, topn=5)) # 5 наиболее близких к "запросу" пирожка
 ```
 
-[Развёрнутый пример] (https://github.com/drafterleo/pie-poem/blob/master/example.ipynb) в формате "тетрадки" IPython. 
+[Развёрнутый пример] (https://github.com/drafterleo/pie-poem/blob/master/example.ipynb) в формате блокнота IPython. 
 
 P.S. Прошу прощения за "ручной привод" - это экспериментальный проект, поиграться с модельками - для "коробки автомат" на данный момент не хватает рук.
 
