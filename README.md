@@ -13,8 +13,11 @@ w2v = sem.load_w2v_model("c:/temp/data/ruscorpora.model.bin.gz") # указат�
 ```
 Затем:
 ```python
-pm = dm.read_data_model("poems_model.dat") # загрузить пирожковую модель
-pprint(similar_poems("запрос", pm, w2v, topn=5)) # 5 наиболее близких к "запросу" пирожка
+# загрузить пирожковую модель
+pm = dm.read_data_model("poems_model.dat") 
+
+# распечатать 5 наиболее близких к "запросу" пирожка
+pprint(similar_poems("запрос", pm, w2v, topn=5)) 
 ```
 
 [Развёрнутый пример] (https://github.com/drafterleo/pie-poem/blob/master/example.ipynb) в формате блокнота IPython. 
