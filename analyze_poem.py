@@ -4,17 +4,22 @@ import random as rnd
 from pprint import pprint
 
 
-def similar_poems_idx(poem: str, poem_model, w2v_model, topn=5) -> list:
-    poem_bag = dm.canonize_words(poem.split())
-    similars = [(i, sem.semantic_similarity(poem_bag, bag, w2v_model))
-                for i, bag in enumerate(poem_model['bags'])]
+def similar_poems_idx(query: str, poem_model, w2v_model, topn=5, use_associations=False) -> list:
+    query_bag = dm.canonize_words(query.split())
+    if use_associations:
+        query_bag += sem.semantic_association(query_bag, w2v_model, topn=5)
+        similars = [(i, sem.semantic_similarity(query_bag, bag + poem_model['associations'][i], w2v_model))
+                    for i, bag in enumerate(poem_model['bags'])]
+    else:
+        similars = [(i, sem.semantic_similarity(query_bag, bag, w2v_model))
+                    for i, bag in enumerate(poem_model['bags'])]
     similars.sort(key=lambda x: x[1], reverse=True)
     return similars[:topn]
 
 
-def similar_poems(poem: str, poem_model, w2v_model, topn=5) -> list:
+def similar_poems(query: str, poem_model, w2v_model, topn=5, use_associations=False) -> list:
     return [(poem_model['poems'][idx], sim)
-            for idx, sim in similar_poems_idx(poem, poem_model, w2v_model, topn)]
+            for idx, sim in similar_poems_idx(query, poem_model, w2v_model, topn, use_associations)]
 
 
 def rate_poem(poem: str, poem_model: dict, w2v_model, nearest=20) -> float:

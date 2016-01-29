@@ -40,9 +40,9 @@ def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:
     return sim_sum / (len(bag1) * len(bag2))
 
 
-def semantic_association(bag: list, w2v_model) -> list:
+def semantic_association(bag: list, w2v_model, topn=10) -> list:
     positive_lst = [w for w in bag if w in w2v_model.vocab]
-    assoc_lst = w2v_model.most_similar(positive=positive_lst, topn=10)
+    assoc_lst = w2v_model.most_similar(positive=positive_lst, topn=topn)
     return [a[0] for a in assoc_lst]
 
 
