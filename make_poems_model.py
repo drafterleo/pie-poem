@@ -107,7 +107,7 @@ if __name__ == "__main__":
     print(dm.canonize_words(poem.split()))
     pm = make_data_model("poems.txt")
     # print(pm)
-    pm_file = "poems_model_big.dat"
+    pm_file = "poems_model.dat"
     dm.write_data_model(pm_file, pm)
     print("model was saved to file '%s'" % pm_file)
     print_poems_model(pm)

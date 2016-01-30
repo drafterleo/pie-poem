@@ -1,5 +1,6 @@
 import gensim
 import logging
+import numpy as np
 
 # http://ling.go.mail.ru/static/models/ruscorpora.model.bin.gz
 WORD2VEC_MODEL_FILE = 'C:/TEMP/data/ruscorpora.model.bin.gz'
@@ -23,7 +24,8 @@ def semantic_density(bag: list, w2v_model, unknown_coef=0.0) -> float:
                 # weight = 1 / (j - i)
                 # weight_sum += weight
                 try:
-                    sim_sum += w2v_model.similarity(bag[i], bag[j]) # * weight
+                    # sim_sum += w2v_model.similarity(bag[i], bag[j]) # * weight
+                    sim_sum += np.dot(w2v_model[bag[i]], w2v_model[bag[j]]) # vectors already normalized
                 except Exception:
                     sim_sum += unknown_coef # * weight
     return sim_sum / divisor # / weight_sum
@@ -34,7 +36,8 @@ def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:
     for i in range(len(bag1)):
         for j in range(len(bag2)):
             try:
-                sim_sum += w2v_model.similarity(bag1[i], bag2[j])
+                # sim_sum += w2v_model.similarity(bag1[i], bag2[j])
+                sim_sum += np.dot(w2v_model[bag1[i]], w2v_model[bag2[j]]) # vectors already normalized
             except Exception:
                 sim_sum += unknown_coef
     return sim_sum / (len(bag1) * len(bag2))
