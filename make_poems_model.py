@@ -39,16 +39,27 @@ def make_bags(texts: list) -> (list, dict):
         bags.append(bag)
     return bags, vocabulary
 
+def empty_model() -> dict:
+    return {'poems'       : [],
+            'bags'        : [],
+            'vocabulary'  : {},
+            'density'     : [],
+            'associations': [],
+            'rates'       : []}
 
-def make_data_model(file_name: str) -> dict:
+
+def make_data_model(file_name: str, semantics=True) -> dict:
     print("making poems model...")
     poems = read_poems(file_name)
     bags, voc = make_bags(poems)
-    print("loading w2v_model...")
-    w2v_model = sem.load_w2v_model(sem.WORD2VEC_MODEL_FILE)
-    print("adding semantics to model...")
-    sd = [sem.semantic_density(bag, w2v_model, unknown_coef=-0.001) for bag in bags]
-    sa = [sem.semantic_association(bag, w2v_model) for bag in bags]
+    sa = []
+    sd = []
+    if semantics:
+        print("loading w2v_model...")
+        w2v_model = sem.load_w2v_model(sem.WORD2VEC_MODEL_FILE)
+        print("adding semantics to model...")
+        sd = [sem.semantic_density(bag, w2v_model, unknown_coef=-0.001) for bag in bags]
+        sa = [sem.semantic_association(bag, w2v_model) for bag in bags]
     rates = [0.0 for _ in range(len(poems))]
     print("model created")
     return {'poems'       : poems,
@@ -61,13 +72,21 @@ def make_data_model(file_name: str) -> dict:
 def append_model_to_model(head_model, tail_model):
     for w in tail_model['vocabulary'].keys():
         head_model['vocabulary'][w] = head_model['vocabulary'].get(w, 0) + tail_model['vocabulary'][w]
-    for i in range(len(tail_model['poems'])):
+
+        poems_len = len(tail_model['poems'])
+        dens_len = len(tail_model['density'])
+        assoc_len = len(tail_model['associations'])
+        rates_len = len(tail_model['rates'])
+    for i in range(poems_len):
         if tail_model['bags'][i] not in head_model['bags']:
             head_model['poems'].append(tail_model['poems'][i])
             head_model['bags'].append(tail_model['bags'][i])
-            head_model['density'].append(tail_model['density'][i])
-            head_model['associations'].append(tail_model['associations'][i])
-            head_model['rates'].append(tail_model['rates'][i])
+            if dens_len == poems_len:
+                head_model['density'].append(tail_model['density'][i])
+            if assoc_len == poems_len:
+                head_model['associations'].append(tail_model['associations'][i])
+            if rates_len == poems_len:
+                head_model['rates'].append(tail_model['rates'][i])
         else:
             print('<!!!>\n', tail_model['poems'][i])
 

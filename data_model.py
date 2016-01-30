@@ -1,6 +1,8 @@
 import pymorphy2
 import json
 
+morph_analyzer = pymorphy2.MorphAnalyzer()
+
 # http://textmechanic.com/text-tools/basic-text-tools/remove-duplicate-lines/
 # http://www.codeisart.ru/blog/python-shingles-algorithm/
 def canonize_words(words: list) -> list:
@@ -12,10 +14,9 @@ def canonize_words(words: list) -> list:
                 'ADVB': '_ADV',
                 'PRED': '_PRAEDIC'}
 
-    morph = pymorphy2.MorphAnalyzer()
     normalized = []
     for i in words:
-        forms = morph.parse(i)
+        forms = morph_analyzer.parse(i)
         try:
             form = max(forms, key=lambda x: (x.score, x.methods_stack[0][2]))
         except Exception:
