@@ -52,6 +52,7 @@ def empty_model() -> dict:
 def make_data_model(file_name: str, semantics=True) -> dict:
     print("making poems model...")
     poems = read_poems(file_name)
+    print('poem count:', len(poems))
     bags, voc = make_bags(poems)
     sa = []
     sd = []
@@ -101,11 +102,6 @@ def print_poems_model(poems_model):
 
 
 if __name__ == "__main__":
-    poems = read_poems("poems.txt")
-    print(len(poems))
-    poem = rnd.choice(poems)
-    print(poem)
-    print(dm.canonize_words(poem.split()))
     pm = make_data_model("poems_33000.txt")
     # print(pm)
     pm_file = "poems_model_big.dat"

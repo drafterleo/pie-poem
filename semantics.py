@@ -28,10 +28,7 @@ def semantic_density(bag: list, w2v_model, unknown_coef=0.0) -> float:
                     sim_sum += np.dot(w2v_model[bag[i]], w2v_model[bag[j]]) # vectors already normalized
                 except:
                     sim_sum += unknown_coef # * weight
-    if divisor > 0:
-        return sim_sum / divisor # / weight_sum
-    else:
-        return 0.0
+        return sim_sum / divisor if divisor > 0 else 0.0 # / weight_sum
 
 
 def semantic_similarity_fast(bag1, bag2: list, w2v_model) -> float:
@@ -47,15 +44,11 @@ def semantic_similarity_fast(bag1, bag2: list, w2v_model) -> float:
             mx2.append(w2v_model[bag2[i]])
         except:
             pass
-    if len(mx1) > 0 and len(mx2) > 0:
-        return np.sum(np.dot(np.vstack(mx1), np.vstack(mx2).T)) / (len(bag1) * len(bag2))
-    else:
-        return 0.0
+    return np.sum(np.dot(np.vstack(mx1), np.vstack(mx2).T)) / (len(bag1) * len(bag2)) \
+           if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
 
 def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:
-    if len(bag1) == 0 or len(bag2) == 0:
-        return 0.0
     sim_sum = 0.0
     for i in range(len(bag1)):
         for j in range(len(bag2)):
@@ -64,7 +57,7 @@ def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:
                 sim_sum += np.dot(w2v_model[bag1[i]], w2v_model[bag2[j]]) # vectors already normalized
             except:
                 sim_sum += unknown_coef
-    return sim_sum / (len(bag1) * len(bag2))
+    return sim_sum / (len(bag1) * len(bag2)) if len(bag1) > 0 and len(bag2) > 0 else 0.0
 
 
 def semantic_association(bag: list, w2v_model, topn=10) -> list:
