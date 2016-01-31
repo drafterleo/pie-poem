@@ -1,6 +1,6 @@
 Чтобы поработать с моделью (poems_model.dat), следует загрузить в консоль питона содержимое [console_scripts.py] (https://github.com/drafterleo/pie-poem/blob/master/console_scripts.py)
 
-Сначала импорты (нужно, чтобы были установлены json, pymorphy2, gensim):
+Сначала импорты (также необходимы [pymorphy2](https://pymorphy2.readthedocs.org/en/latest/) и [gensim](https://radimrehurek.com/gensim/)):
 ```python
 import semantics as sem
 import data_model as dm
