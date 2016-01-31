@@ -8,10 +8,10 @@ def similar_poems_idx(query: str, poem_model, w2v_model, topn=5, use_association
     query_bag = dm.canonize_words(query.split())
     if use_associations:
         query_bag += sem.semantic_association(query_bag, w2v_model, topn=5)
-        similars = [(i, sem.semantic_similarity(query_bag, bag + poem_model['associations'][i], w2v_model))
+        similars = [(i, sem.semantic_similarity_fast(query_bag, bag + poem_model['associations'][i], w2v_model))
                     for i, bag in enumerate(poem_model['bags'])]
     else:
-        similars = [(i, sem.semantic_similarity(query_bag, bag, w2v_model))
+        similars = [(i, sem.semantic_similarity_fast(query_bag, bag, w2v_model))
                     for i, bag in enumerate(poem_model['bags'])]
     similars.sort(key=lambda x: x[1], reverse=True)
     return similars[:topn]
