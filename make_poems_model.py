@@ -39,6 +39,7 @@ def make_bags(texts: list) -> (list, dict):
         bags.append(bag)
     return bags, vocabulary
 
+
 def empty_model() -> dict:
     return {'poems'       : [],
             'bags'        : [],
