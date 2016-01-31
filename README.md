@@ -4,8 +4,8 @@
 ```python
 import semantics as sem
 import data_model as dm
+import analyze_poem as ap
 from pprint import pprint
-from analyze_poem import *
 ```
 Потом вгрузить word2vec модель (занимает некоторое время), модели скачивал c [RusVectōrēs] (http://ling.go.mail.ru/dsm/ru/about#models)
 ```python
@@ -17,7 +17,7 @@ w2v = sem.load_w2v_model("c:/temp/data/ruscorpora.model.bin.gz") # указат�
 pm = dm.read_data_model("poems_model.dat") 
 
 # распечатать 5 наиболее близких к "запросу" пирожка
-pprint(similar_poems("запрос", pm, w2v, topn=5)) 
+pprint(ap.similar_poems("запрос", pm, w2v, topn=5)) 
 ```
 
 [Развёрнутый пример] (https://github.com/drafterleo/pie-poem/blob/master/example.ipynb) в формате блокнота IPython. 
