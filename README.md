@@ -22,5 +22,7 @@ pprint(ap.similar_poems("запрос", pm, w2v, topn=5))
 
 [Развёрнутый пример] (https://github.com/drafterleo/pie-poem/blob/master/example.ipynb) в формате блокнота IPython. 
 
+[poems.csv] (https://github.com/drafterleo/pie-poem/blob/master/poems.csv) - база [Поэтория] (http://poetory.ru/) (любезно предоставил Иван Безденежных).
+
 P.S. Прошу простить за "ручной привод" - это экспериментальный проект, поиграться с модельками - на разработку "коробки автомат", к сожалению, не хватает времени.
 
