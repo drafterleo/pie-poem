@@ -1,6 +1,7 @@
 import semantics as sem
 import data_model as dm
 import random as rnd
+import numpy as np
 from pprint import pprint
 
 
@@ -8,11 +9,13 @@ def similar_poems_idx(query: str, poem_model, w2v_model, topn=5, use_association
     query_bag = dm.canonize_words(query.split())
     if use_associations:
         query_bag += sem.semantic_association(query_bag, w2v_model, topn=5)
-        similars = [(i, sem.semantic_similarity_fast(query_bag, bag + poem_model['associations'][i], w2v_model))
-                    for i, bag in enumerate(poem_model['bags'])]
+        query_mx = sem.bag_to_matrix(query_bag, w2v_model)
+        similars = [(i, sem.semantic_similarity_fast(query_mx, np.vstack((mx, poem_model['a_matrices'][i]))))
+                    for i, mx in enumerate(poem_model['matrices']) if len(mx) > 0]
     else:
-        similars = [(i, sem.semantic_similarity_fast(query_bag, bag, w2v_model))
-                    for i, bag in enumerate(poem_model['bags'])]
+        query_mx = sem.bag_to_matrix(query_bag, w2v_model)
+        similars = [(i, sem.semantic_similarity_fast(query_mx, mx))
+                    for i, mx in enumerate(poem_model['matrices'])]
     similars.sort(key=lambda x: x[1], reverse=True)
     return similars[:topn]
 

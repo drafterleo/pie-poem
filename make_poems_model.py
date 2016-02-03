@@ -1,4 +1,3 @@
-import random as rnd
 import data_model as dm
 import semantics as sem
 
@@ -101,13 +100,24 @@ def print_poems_model(poems_model):
     print("rates: ", poems_model['rates'])
 
 
+def load_poems_model(file_name, w2v_model, vectorize=True):
+    pmodel = dm.read_data_model(file_name)
+    print("loading model...")
+    if vectorize:
+        print("vectorizing model...")
+        pmodel['matrices'] = [sem.bag_to_matrix(bag, w2v_model) for bag in pmodel['bags']]
+        pmodel['a_matrices'] = [sem.bag_to_matrix(bag, w2v_model) for bag in pmodel['associations']]
+    print("poems model '%s' loaded" % file_name)
+    return pmodel
+
+
 if __name__ == "__main__":
     pm = make_data_model("poems_33000.txt")
     # print(pm)
     pm_file = "poems_model_big.dat"
     dm.write_data_model(pm_file, pm)
     print("model was saved to file '%s'" % pm_file)
-    print_poems_model(pm)
+    # print_poems_model(pm)
 
 # import data_model as dm
 # pm = dm.read_data_model("poems_model.dat")

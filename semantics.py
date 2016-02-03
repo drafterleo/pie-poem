@@ -30,22 +30,18 @@ def semantic_density(bag: list, w2v_model, unknown_coef=0.0) -> float:
                     sim_sum += unknown_coef # * weight
         return sim_sum / divisor if divisor > 0 else 0.0 # / weight_sum
 
+def bag_to_matrix(bag: list, w2v_model):
+    mx = []
+    for i in range(len(bag)):
+        try:
+            mx.append(w2v_model[bag[i]])
+        except:
+            pass
+    return np.vstack(mx) if len(mx) > 0 else np.array([])
 
-def semantic_similarity_fast(bag1, bag2: list, w2v_model) -> float:
-    mx1 = []
-    for i in range(len(bag1)):
-        try:
-            mx1.append(w2v_model[bag1[i]])
-        except:
-            pass
-    mx2 = []
-    for i in range(len(bag2)):
-        try:
-            mx2.append(w2v_model[bag2[i]])
-        except:
-            pass
-    return np.sum(np.dot(np.vstack(mx1), np.vstack(mx2).T)) / (len(bag1) * len(bag2)) \
-           if len(mx1) > 0 and len(mx2) > 0 else 0.0
+
+def semantic_similarity_fast(mx1, mx2) -> float:
+    return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
 
 def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:
