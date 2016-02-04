@@ -3,7 +3,7 @@
 Сначала импорты (также необходимы [pymorphy2](https://pymorphy2.readthedocs.org/en/latest/) и [gensim](https://radimrehurek.com/gensim/)):
 ```python
 import semantics as sem
-import data_model as dm
+import make_poems_model as mpm
 import analyze_poem as ap
 from pprint import pprint
 ```
@@ -14,7 +14,7 @@ w2v = sem.load_w2v_model("c:/temp/data/ruscorpora.model.bin.gz") # указат�
 Затем:
 ```python
 # загрузить пирожковую модель
-pm = dm.read_data_model("poems_model.dat") 
+pm = mpm.load_poems_model("poems_model.dat", w2v)
 
 # распечатать 5 наиболее близких к "запросу" пирожка
 pprint(ap.similar_poems("запрос", pm, w2v, topn=5)) 
