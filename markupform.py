@@ -3,7 +3,7 @@
 import sys
 from PyQt4 import QtGui
 from ui_markupform import Ui_MarkupForm
-import data_model
+import make_poems_model as mpm
 
 
 class Window(QtGui.QWidget, Ui_MarkupForm):
@@ -48,7 +48,7 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
     def loadModel(self):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open Model', '')
         self.modelFileNameLabel.setText(fname)
-        self.pmodel = data_model.read_data_model(fname)
+        self.pmodel = mpm.read_data_model(fname)
         if not ('rates' in self.pmodel.keys()):
             self.pmodel['rates'] = [0.0 for _ in range(self.poemCount())]
         self.curr_idx = 0
@@ -65,7 +65,7 @@ class Window(QtGui.QWidget, Ui_MarkupForm):
 
     def saveModel(self):
         fname = QtGui.QFileDialog.getSaveFileName(self, 'Save Model', '')
-        data_model.write_data_model(fname, self.pmodel)
+        mpm.write_data_model(fname, self.pmodel)
         self.modelFileNameLabel.setText(fname)
         return
 

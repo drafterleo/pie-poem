@@ -1,4 +1,4 @@
-import data_model as dm
+import json
 import semantics as sem
 
 # data model format
@@ -8,6 +8,16 @@ import semantics as sem
 #    'density': [float, float, ...]
 #    'associations: [list, list, ...]
 #    'rates': [float, float, ...]       <- markupform module
+
+
+def read_data_model(file_name: str) -> dict:
+    file = open(file_name, mode='r', encoding='utf-8')
+    return json.load(file)
+
+
+def write_data_model(file_name: str, data_model: dict):
+    file = open(file_name, mode='w', encoding='utf-8')
+    json.dump(data_model, file, separators=(',', ':'), ensure_ascii=False)
 
 
 def read_poems(file_name: str) -> list:
@@ -48,7 +58,7 @@ def empty_model() -> dict:
             'rates'       : []}
 
 
-def make_data_model(file_name: str, semantics=True) -> dict:
+def make_poems_model(file_name: str, semantics=True) -> dict:
     print("making poems model...")
     poems = read_poems(file_name)
     print('poem count:', len(poems))
@@ -101,7 +111,7 @@ def print_poems_model(poems_model):
 
 
 def load_poems_model(file_name, w2v_model, vectorize=True):
-    pmodel = dm.read_data_model(file_name)
+    pmodel = read_data_model(file_name)
     print("loading model...")
     if vectorize:
         print("vectorizing model...")
@@ -111,11 +121,17 @@ def load_poems_model(file_name, w2v_model, vectorize=True):
     return pmodel
 
 
+def save_poems_to_file(poem_model, file_name):
+    f_out = open(file_name, mode='w', encoding='utf-8')
+    for poem in poem_model['poems']:
+        f_out.write(poem + '\n')
+
+
 if __name__ == "__main__":
-    pm = make_data_model("poems_33000.txt")
+    pm = make_poems_model("poems_33000.txt")
     # print(pm)
     pm_file = "poems_model_big.dat"
-    dm.write_data_model(pm_file, pm)
+    write_data_model(pm_file, pm)
     print("model was saved to file '%s'" % pm_file)
     # print_poems_model(pm)
 

@@ -1,12 +1,11 @@
-import semantics as sem
-import data_model as dm
-import random as rnd
 import numpy as np
-from pprint import pprint
-
+import semantics as sem
+import make_poems_model as mpm
+import random
+import pprint
 
 def similar_poems_idx(query: str, poem_model, w2v_model, topn=5, use_associations=False) -> list:
-    query_bag = dm.canonize_words(query.split())
+    query_bag = sem.canonize_words(query.split())
     if use_associations:
         query_bag += sem.semantic_association(query_bag, w2v_model, topn=5)
         query_mx = sem.bag_to_matrix(query_bag, w2v_model)
@@ -79,8 +78,8 @@ if __name__ == "__main__":
     )
 
     w2v = sem.load_w2v_model(sem.WORD2VEC_MODEL_FILE)
-    pm = dm.read_data_model("poems_model.dat")
-    test_poem = rnd.choice(test_poems)
+    pm = mpm.read_data_model("poems_model.dat")
+    test_poem = random.choice(test_poems)
     sim_poems = similar_poems(test_poem, pm, w2v)
     print(test_poem)
     pprint(sim_poems)
