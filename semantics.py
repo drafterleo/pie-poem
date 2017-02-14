@@ -78,7 +78,8 @@ def most_similar(w2v_model, positive="", negative="", topn=10):
 
 
 def semantic_similarity_fast(mx1, mx2) -> float:
-    return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) if len(mx1) > 0 and len(mx2) > 0 else 0.0
+    return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
+           if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
 
 def semantic_similarity(bag1, bag2: list, w2v_model, unknown_coef=0.0) -> float:
