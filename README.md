@@ -7,7 +7,7 @@ import make_poems_model as mpm
 import analyze_poem as ap
 from pprint import pprint
 ```
-Потом вгрузить word2vec модель (занимает некоторое время), модели скачивал c [RusVectōrēs](http://ling.go.mail.ru/dsm/ru/about#models) (правда, у них периодически меняются грамматические суффиксы в словаре - поэтому, чтобы всё заработало, лучше [скачать](https://drive.google.com/open?id=0BynncCwFMx15cTIzM3M5bUl4S1k) модель, которая используется в примерах).
+Потом вгрузить word2vec модель (занимает некоторое время), модели скачивал c [RusVectōrēs](http://rusvectores.org/ru/models) (правда, у них периодически меняется грамматическая разметка в словаре - поэтому, чтобы всё заработало, лучше [скачать](https://drive.google.com/open?id=0BynncCwFMx15cTIzM3M5bUl4S1k) модель, которая используется в примерах).
 ```python
 w2v = sem.load_w2v_model("c:/temp/data/ruscorpora.model.bin.gz") # указать путь до файла word2vec модели
 ```
