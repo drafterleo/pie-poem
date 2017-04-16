@@ -38,7 +38,7 @@ def canonize_words(words: list) -> list:
 
 def load_w2v_model(file_name: str):
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-    w2v_model = gensim.models.Word2Vec.load_word2vec_format(file_name, binary=True, encoding='utf-8')
+    w2v_model = gensim.models.KeyedVectors.load_word2vec_format(file_name, binary=True, encoding='utf-8')
     print("word2vec model '%s' loaded" % file_name)
     return w2v_model
 
