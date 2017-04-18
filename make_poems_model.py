@@ -80,6 +80,7 @@ def make_poems_model(file_name: str, semantics=True) -> dict:
             'associations': sa,
             'rates'       : rates}
 
+
 def append_model_to_model(head_model, tail_model):
     for w in tail_model['vocabulary'].keys():
         head_model['vocabulary'][w] = head_model['vocabulary'].get(w, 0) + tail_model['vocabulary'][w]
@@ -100,6 +101,7 @@ def append_model_to_model(head_model, tail_model):
                 head_model['rates'].append(tail_model['rates'][i])
         else:
             print('<!!!>\n', tail_model['poems'][i])
+
 
 def print_poems_model(poems_model):
     print("poems: ", poems_model['poems'])
