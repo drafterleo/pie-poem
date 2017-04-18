@@ -6,7 +6,7 @@ import make_poems_model as mpm
 
 async def index(request):
     print(request)
-    return web.FileResponse('index.html')
+    return web.FileResponse('./static/index.html')
 
 
 async def poems(request):
@@ -22,8 +22,9 @@ def setup_routes(app):
 
 
 def setup_static(app):
-    path = os.path.join(os.path.dirname(__file__), 'static')
-    app.router.add_static('/static/', path, name='static')
+    path = os.path.dirname(os.path.realpath(__file__)) + '/static/'
+    print(__file__, path)
+    app.router.add_static('/css', path + 'css')
 
 
 def load_models():
