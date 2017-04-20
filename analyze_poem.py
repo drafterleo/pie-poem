@@ -3,23 +3,29 @@ import semantics as sem
 import make_poems_model as mpm
 import random
 import pprint
+import heapq
 
-def similar_poems_idx(query: str, poem_model, w2v_model, topn=5, use_associations=False) -> list:
+
+def similar_poems_idx(query: str, poem_model, w2v_model, topn=5, use_associations=False) -> list:  # [(poem_idx, sim)]
     query_bag = sem.canonize_words(query.split())
     if use_associations:
         query_bag += sem.semantic_association(query_bag, w2v_model, topn=5)
         query_mx = sem.bag_to_matrix(query_bag, w2v_model)
+        if len(query_mx) == 0:
+            return []
         similars = [(i, sem.semantic_similarity_fast(query_mx, np.vstack((mx, poem_model['a_matrices'][i]))))
                     for i, mx in enumerate(poem_model['matrices']) if len(mx) > 0]
     else:
         query_mx = sem.bag_to_matrix(query_bag, w2v_model)
+        if len(query_mx) == 0:
+            return []
         similars = [(i, sem.semantic_similarity_fast(query_mx, mx))
                     for i, mx in enumerate(poem_model['matrices'])]
-    similars.sort(key=lambda x: x[1], reverse=True)
-    return similars[:topn]
+    # similars.sort(key=lambda x: x[1], reverse=True)
+    return heapq.nlargest(topn, similars, key=lambda x: x[1])
 
 
-def similar_poems(query: str, poem_model, w2v_model, topn=5, use_associations=False) -> list:
+def similar_poems(query: str, poem_model, w2v_model, topn=5, use_associations=False) -> list:  # [(poem, sim)]
     return [(poem_model['poems'][idx], sim)
             for idx, sim in similar_poems_idx(query, poem_model, w2v_model, topn, use_associations)]
 

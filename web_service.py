@@ -22,7 +22,7 @@ class PoemsWebServer:
 
         # load models
         self.w2v = sem.load_w2v_model("c:/data/ruscorpora.model.bin.gz")
-        self.pm = mpm.load_poems_model("poems_model.dat", self.w2v, vectorize=True)
+        self.pm = mpm.load_poems_model("poems_model_big.dat", self.w2v, vectorize=True)
 
     def setup_routes(self):
         self.app.router.add_route('GET', '/', self.index)
@@ -44,11 +44,11 @@ class PoemsWebServer:
 
     async def poems(self, request):
         print(request)
-        data = await request.post()  # {name: val, ...}
+        data = await request.post()  # <- {name: val, ...}
         words = data.get('words', '')
         if len(words) > 0:
             print(words)
-            sim_poems = ap.similar_poems(words, self.pm, self.w2v, topn=5, use_associations=False)  # -> [(p, s) ...]
+            sim_poems = ap.similar_poems(words, self.pm, self.w2v, topn=5, use_associations=False)  # <- [(p, s) ...]
             poems = [spoem[0].replace('\n', '<br>') for spoem in sim_poems]
             print(poems)
             poems_json = json.dumps(poems, separators=(',', ':'), ensure_ascii=False)
