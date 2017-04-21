@@ -5,6 +5,8 @@ from gensim.models.keyedvectors import KeyedVectors
 import logging
 import numpy as np
 import re
+import click
+
 
 def load_w2v_model(file_name: str):
     logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
@@ -12,31 +14,38 @@ def load_w2v_model(file_name: str):
     print("word2vec model '%s' loaded" % file_name)
     return w2v_model
 
-model = load_w2v_model("c:/data/ruscorpora.model.bin.gz")
 
-spro_keys = [model.index2word[idx]
-             for idx in range(len(model.index2word))
-             if '_SPRO' in model.index2word[idx]]
+def save_w2v_model(file_name: str, w2v_model: KeyedVectors):
+    logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+    w2v_model.save_word2vec_format(file_name, binary=True)
+    print("word2vec model '%s' saved" % file_name)
+    return w2v_model
 
-apro_keys = [model.index2word[idx]
-             for idx in range(len(model.index2word))
-             if '_APRO' in model.index2word[idx]]
+# model = load_w2v_model("c:/data/ruscorpora.model.bin.gz")
 
-conj_keys = [model.index2word[idx]
-             for idx in range(len(model.index2word))
-             if '_CONJ' in model.index2word[idx]]
-
-advpro_keys = [model.index2word[idx]
-             for idx in range(len(model.index2word))
-             if '_ADVPRO' in model.index2word[idx]]
-
-part_keys = [model.index2word[idx]
-             for idx in range(len(model.index2word))
-             if '_PART' in model.index2word[idx]]   # ??
-
-pr_keys = [model.index2word[idx]
-           for idx in range(len(model.index2word))
-           if '_PR' in model.index2word[idx]]
+# spro_keys = [model.index2word[idx]
+#              for idx in range(len(model.index2word))
+#              if '_SPRO' in model.index2word[idx]]
+#
+# apro_keys = [model.index2word[idx]
+#              for idx in range(len(model.index2word))
+#              if '_APRO' in model.index2word[idx]]
+#
+# conj_keys = [model.index2word[idx]
+#              for idx in range(len(model.index2word))
+#              if '_CONJ' in model.index2word[idx]]
+#
+# advpro_keys = [model.index2word[idx]
+#              for idx in range(len(model.index2word))
+#              if '_ADVPRO' in model.index2word[idx]]
+#
+# part_keys = [model.index2word[idx]
+#              for idx in range(len(model.index2word))
+#              if '_PART' in model.index2word[idx]]   # ??
+#
+# pr_keys = [model.index2word[idx]
+#            for idx in range(len(model.index2word))
+#            if '_PR' in model.index2word[idx]]
 
 
 def clear_word(word):
@@ -53,7 +62,31 @@ def is_word_dirty(word, re_exp):
     return True
 
 
-re_rus_word = re.compile('^[А-Я\-]+$')
-dirty_keys = [model.index2word[idx]
-              for idx in range(len(model.index2word))
-              if is_word_dirty(model.index2word[idx], re_exp=re_rus_word)]
+def delete_keys(w2v_model: KeyedVectors, del_keys: list):
+    del_indexes = []
+    with click.progressbar(del_keys, length=len(del_keys), label='Deleted keys') as bar:
+        for key in bar:
+            del_idx = w2v_model.vocab[key].index
+            del_indexes.append(del_idx)
+            del w2v_model.index2word[del_idx]
+            del w2v_model.vocab[key]
+            for i in range(del_idx + 1, len(model.vocab)):  # splice word indexes
+                i_key = w2v_model.index2word[i]
+                w2v_model.vocab[i_key].index -= 1
+
+        w2v_model.syn0 = np.delete(w2v_model.syn0, del_indexes, axis=0)
+
+
+def thin_w2vec_model(w2v_model: KeyedVectors):
+    re_rus_word = re.compile('^[А-Я\-]+$')
+    dirty_keys = [model.index2word[idx]
+                  for idx in range(len(model.index2word))
+                  if is_word_dirty(model.index2word[idx], re_exp=re_rus_word)]
+    print('deleting dirty keys...')
+    delete_keys(w2v_model, dirty_keys)
+
+
+if __name__ == "__main__":
+    model = load_w2v_model("c:/data/ruscorpora.model.bin.gz")
+    thin_w2vec_model(model)
+    save_w2v_model('c:/data/ruscorpora.model.bin_thin.gz', model)
