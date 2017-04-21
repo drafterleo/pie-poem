@@ -56,7 +56,7 @@ def clear_word(word):
 def is_word_dirty(word, re_exp):
     under_idx = word.find('_')
     if under_idx >= 0:
-        word = word[:under_idx].upper()
+        word = word[:under_idx].upper()  # take off grammar suffix
         if re.match(re_exp, word):
             return False
     return True
