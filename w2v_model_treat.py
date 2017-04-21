@@ -64,6 +64,7 @@ def is_word_dirty(word, re_exp):
 
 def delete_keys(w2v_model: KeyedVectors, del_keys: list):
     del_indexes = []
+    # delete keys from vocab
     with click.progressbar(del_keys, length=len(del_keys), label='Deleted keys') as bar:
         for key in bar:
             del_idx = w2v_model.vocab[key].index
@@ -71,10 +72,10 @@ def delete_keys(w2v_model: KeyedVectors, del_keys: list):
             del w2v_model.vocab[key]
             w2v_model.index2word[del_idx] = ''
 
-    # delete dirty vectors
+    # delete vectors form matrix
     w2v_model.syn0 = np.delete(w2v_model.syn0, del_indexes, axis=0)
 
-    # throw empty words
+    # throw empty words from vocab index
     w2v_model.index2word = [word for word in w2v_model.index2word if word]
 
     # renumerate vocab indexes
