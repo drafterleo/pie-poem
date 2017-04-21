@@ -69,13 +69,19 @@ def delete_keys(w2v_model: KeyedVectors, del_keys: list):
             del_idx = w2v_model.vocab[key].index
             del_indexes.append(del_idx)
             del w2v_model.vocab[key]
-            del w2v_model.index2word[del_idx]
-            for i in range(del_idx + 1, len(w2v_model.index2word)):  # splice word indexes
-                i_key = w2v_model.index2word[i]
-                w2v_model.vocab[i_key].index -= 1
+            w2v_model.index2word[del_idx] = ''
 
-        w2v_model.syn0 = np.delete(w2v_model.syn0, del_indexes, axis=0)
-        print(len(model.vocab), w2v_model.syn0.shape)
+    # delete dirty vectors
+    w2v_model.syn0 = np.delete(w2v_model.syn0, del_indexes, axis=0)
+
+    # throw empty words
+    w2v_model.index2word = [word for word in w2v_model.index2word if word]
+
+    # renumerate vocab indexes
+    for i, word in enumerate(w2v_model.index2word):
+        w2v_model.vocab[word].index = i
+
+    print(len(model.vocab), w2v_model.syn0.shape)
 
 
 def thin_w2vec_model(w2v_model: KeyedVectors):
