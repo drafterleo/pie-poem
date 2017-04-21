@@ -68,13 +68,14 @@ def delete_keys(w2v_model: KeyedVectors, del_keys: list):
         for key in bar:
             del_idx = w2v_model.vocab[key].index
             del_indexes.append(del_idx)
-            del w2v_model.index2word[del_idx]
             del w2v_model.vocab[key]
-            for i in range(del_idx + 1, len(model.vocab)):  # splice word indexes
+            del w2v_model.index2word[del_idx]
+            for i in range(del_idx + 1, len(w2v_model.index2word)):  # splice word indexes
                 i_key = w2v_model.index2word[i]
                 w2v_model.vocab[i_key].index -= 1
 
         w2v_model.syn0 = np.delete(w2v_model.syn0, del_indexes, axis=0)
+        print(len(model.vocab), w2v_model.syn0.shape)
 
 
 def thin_w2vec_model(w2v_model: KeyedVectors):
