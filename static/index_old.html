@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<!-- <body>
+	<form action="http://127.0.0.1:8081" method="POST">
+		<input name="words">
+		<input type="submit">
+	</form>
+</body> -->
+
+<body>
+
+<input id="words">
+<button type="button" onclick="loadDoc()">Request</button>
+
+<p id="request"></p>
+ 
+<script>
+function loadDoc() {
+  var words = document.getElementById("words").value;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("request").innerHTML = this.responseText;
+      console.log(this.responseText);
+    }
+  };
+  xhttp.open("POST", "/poems", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send("words=" + words);
+}
+</script>
+
+</body>
+
+</html>

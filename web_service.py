@@ -31,7 +31,8 @@ class PoemsWebServer:
     def setup_static(self):
         path = os.path.dirname(os.path.realpath(__file__)) + '/static/'
         # print(__file__, path)
-        self.app.router.add_static('/css', path + 'css')
+        # self.app.router.add_static('/css', path + 'css')
+        self.app.router.add_static('/dist', path + 'dist')
 
     def start_web_server(self):
         web.run_app(self.app, host=self.host, port=self.port)
