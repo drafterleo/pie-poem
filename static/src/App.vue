@@ -1,60 +1,77 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <h1></h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
-  </div>
+    <div id="app">
+        <div class="w3-container w3-indigo w3-card-4 w3-margin w3-center">
+            <div class="w3-container w3-margin">
+                <input id="search-edit"
+                       class="w3-input w3-border w3-xlarge"
+                       name="search"
+                       type="text">
+                <span id="search-btn"
+                      class="material-icons w3-xxlarge"
+                      @click="searchPoems()">search</span>
+            </div>
+        </div>
+
+        <div class="w3-container w3-center">
+            <app-poem-box v-for="ipoem in poems" :key="ipoem">
+                <p v-html="ipoem" class="w3-large poem-text"></p>
+            </app-poem-box>
+        </div>
+    </div>
 </template>
 
 <script>
-export default {
-  name: 'app',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+    import PoemBox from './Components/PoemBox.vue'
+
+    export default {
+        name: 'app',
+        data () {
+            return {
+                poem: 'полдня пытаюсь поработать<br>' +
+                      'полночи не могу заснуть<br>' +
+                      'пол утра не могу проснуться<br>' +
+                      'и только вечером живу',
+                poems: [],
+                poemsCount: 10
+            }
+        },
+        components: {
+            'app-poem-box': PoemBox
+        },
+        methods: {
+            searchPoems() {
+                this.poems = [];
+                for (let i = 0; i < this.poemsCount; i++) {
+                    this.poems.push(this.poem);
+                }
+            }
+        }
     }
-  }
-}
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+    #search-edit {
+        display: inline-block;
+        width: 70%;
+        padding-right: 40px;
+    }
 
-h1, h2 {
-  font-weight: normal;
-}
+    #search-btn {
+        position: relative;
+        z-index: 1;
+        right: 50px;
+        top: 10px;
+        color: #8B8B8B;
+        cursor:pointer;
+        width: 0;
+    }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+    #search-btn:hover {
+        color: #3B3B3B;
+    }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
+    .poem-text {
+        text-align: left;
+        padding: 0 10px;
+    }
 </style>
