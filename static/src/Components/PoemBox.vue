@@ -11,9 +11,9 @@
 
 <style>
     .poem-box {
-        display: inline-block;
+        /*display: inline-block;*/
         width: 350px;
-        margin: 5px 5px;
+        margin: 5px auto;
         background: #FFF3CD;
     }
 </style>
