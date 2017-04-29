@@ -33,6 +33,7 @@ class PoemsWebServer:
         # print(__file__, path)
         # self.app.router.add_static('/css', path + 'css')
         self.app.router.add_static('/dist', path + 'dist')
+        self.app.router.add_static('/css', path + 'css')
 
     def start_web_server(self):
         web.run_app(self.app, host=self.host, port=self.port)
