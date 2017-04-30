@@ -58,10 +58,10 @@ class PoemsWebServer:
         return web.FileResponse('./static/index.html')
 
     async def poems(self, request):
-        data = await request.post()  # <- {name: val, ...}
+        data = await request.json()  # <- {name: val, ...}
         words = data.get('words', '')
+        print('words: ', words)
         if len(words) > 0:
-            print(words)
             sim_poems = ap.similar_poems(words[:50], self.pm, self.w2v, topn=5, use_associations=False)  # <- [(p, s) ...]
             poems = [spoem[0].replace('\n', '<br>') for spoem in sim_poems]
             print(poems)
