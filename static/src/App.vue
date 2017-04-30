@@ -7,10 +7,11 @@
                        class="w3-input w3-border w3-xlarge"
                        name="search"
                        type="text"
-                       v-model="searchText">
+                       v-model="searchText"
+                       @keyup.enter="fetchPoems()">
                 <span id="search-btn"
                       class="material-icons w3-xxlarge"
-                      @click="searchPoems()">search</span>
+                      @click="fetchPoems()">search</span>
             </div>
         </div>
 
@@ -46,16 +47,13 @@
             'app-poem-box': PoemBox
         },
         methods: {
-            searchPoems () {
-                console.log('searching: ' + this.searchText);
-                this.fetchPoems();
+            genPoems () {
                 this.poems = [];
                 for (let i = 0; i < this.poemsCount; i++) {
                     this.poems.push(this.poem);
                 }
             },
             fetchPoems () {
-                console.log('fetching: ' + this.searchText);
                 let fetchData = {
                     method: 'POST',
                     body: JSON.stringify({
@@ -66,9 +64,9 @@
                     })
                 };
 
-                fetch('http://127.0.0.1:8081/poems', fetchData)
+                fetch('/poems', fetchData)
                     .then(response => response.json())
-                    .then(json => console.log(json))
+                    .then(data => this.poems = data)
             }
         }
     }

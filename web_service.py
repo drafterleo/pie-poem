@@ -1,6 +1,5 @@
 from aiohttp import web
-import aiohttp_cors
-from multidict import CIMultiDict
+import aiohttp_cors  # https://github.com/aio-libs/aiohttp-cors
 import os
 import sys
 import json
@@ -33,14 +32,14 @@ class PoemsWebServer:
     def setup_routes(self):
         # Configure default CORS (Cross-Origin Resource Sharing) settings.
         cors = aiohttp_cors.setup(self.app, defaults={
-            "*": aiohttp_cors.ResourceOptions(
+            "http://127.0.0.1": aiohttp_cors.ResourceOptions(
                 allow_credentials=True,
                 expose_headers="*",
                 allow_headers="*",
             )
         })
 
-        cors.add(self.app.router.add_route('GET', '/', self.index))
+        self.app.router.add_route('GET', '/', self.index)
         cors.add(self.app.router.add_route('POST', '/poems', self.poems))
 
     def setup_static(self):
@@ -62,13 +61,13 @@ class PoemsWebServer:
         words = data.get('words', '')
         print('words: ', words)
         if len(words) > 0:
-            sim_poems = ap.similar_poems(words[:50], self.pm, self.w2v, topn=5, use_associations=False)  # <- [(p, s) ...]
+            sim_poems = ap.similar_poems(words[:50], self.pm, self.w2v, topn=10, use_associations=False)  # <- [(p, s) ...]
             poems = [spoem[0].replace('\n', '<br>') for spoem in sim_poems]
             print(poems)
             poems_json = json.dumps(poems, separators=(',', ':'), ensure_ascii=False)
             return web.Response(text=poems_json)
         else:
-            return web.Response(text='[]')
+            return web.Response(text=json.dumps('[]'))
 
 
 if __name__ == "__main__":
