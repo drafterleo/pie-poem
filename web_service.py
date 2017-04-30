@@ -1,5 +1,6 @@
 from aiohttp import web
 import os
+import sys
 import json
 
 import semantics as sem
@@ -14,14 +15,17 @@ class PoemsWebServer:
     def __init__(self):
 
         # init web app
-        self.host = '127.0.0.1'
+        self.host = '0.0.0.0'
         self.port = 8081
         self.app = web.Application()
         self.setup_static()
         self.setup_routes()
 
         # load models
-        self.w2v = sem.load_w2v_model("c:/data/ruscorpora.model.bin.gz")
+        if sys.platform.startswith("win"):
+            self.w2v = sem.load_w2v_model("c:/data/ruscorpora.model.bin.gz")
+        else:
+            self.w2v = sem.load_w2v_model("/data/ruscorpora.model.bin.gz")
         self.pm = mpm.load_poems_model("poems_model_big.dat", self.w2v, vectorize=True)
 
     def setup_routes(self):
