@@ -19,7 +19,7 @@ def similar_poems_idx(query: str, poem_model, w2v_model, topn=5, use_association
         query_mx = sem.bag_to_matrix(query_bag, w2v_model)
         if len(query_mx) == 0:
             return []
-        similars = [(i, sem.semantic_similarity_fast(query_mx, mx))
+        similars = [(i, sem.semantic_similarity_fast_log(query_mx, mx))
                     for i, mx in enumerate(poem_model['matrices'])]
     # similars.sort(key=lambda x: x[1], reverse=True)
     return heapq.nlargest(topn, similars, key=lambda x: x[1])
