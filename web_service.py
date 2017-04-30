@@ -46,11 +46,11 @@ def setup_static(app: web.Application):
     app.router.add_static('/css', path + 'css')
 
 
-async def index(request: web.Request) -> web.FileResponse:
+async def index(request: web.Request) -> web.StreamResponse:
     return web.FileResponse('./static/index.html')
 
 
-async def poems(request: web.Request) -> web.Response:
+async def poems(request: web.Request) -> web.StreamResponse:
     data = await request.json()
     words = data.get('words', '')
     print('words: ', words)
@@ -65,7 +65,7 @@ async def poems(request: web.Request) -> web.Response:
 
 
 async def error_middleware(app: web.Application, handler: Callable) -> Callable:
-    async def middleware_handler(request: web.Request) -> web.FileResponse:
+    async def middleware_handler(request: web.Request) -> web.StreamResponse:
         try:
             response = await handler(request=request)
             if response.status == 404:
