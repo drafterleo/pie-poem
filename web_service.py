@@ -13,17 +13,17 @@ from typing import Callable
 # curl -X POST -d "words=%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81" localhost:8081/poems
 # curl -X POST --data-urlencode "words=запрос" localhost:8081
 
-w2v = None
-pm = None
+w2v_model = None
+poems_model = None
 
 
 def load_models():
-    global w2v, pm
+    global w2v_model, poems_model
     if sys.platform.startswith("win"):
-        w2v = sem.load_w2v_model("c:/data/ruscorpora.model.bin.gz")
+        w2v_model = sem.load_w2v_model("c:/data/ruscorpora.model.bin.gz")
     else:
-        w2v = sem.load_w2v_model("/data/ruscorpora.model.bin.gz")
-    pm = mpm.load_poems_model("poems_model_big.dat", w2v, vectorize=True)
+        w2v_model = sem.load_w2v_model("/data/ruscorpora.model.bin.gz")
+    poems_model = mpm.load_poems_model("poems_model_big.dat", w2v_model, vectorize=True)
 
 
 def setup_routes(app: web.Application):
@@ -35,7 +35,6 @@ def setup_routes(app: web.Application):
             allow_headers="*",
         )
     })
-
     app.router.add_route('GET', '/', index)
     cors.add(app.router.add_route('POST', '/poems', poems))
 
@@ -47,16 +46,16 @@ def setup_static(app: web.Application):
     app.router.add_static('/css', path + 'css')
 
 
-async def index(request):
+async def index(request: web.Request) -> web.FileResponse:
     return web.FileResponse('./static/index.html')
 
 
-async def poems(request):
-    data = await request.json()  # <- {name: val, ...}
+async def poems(request: web.Request) -> web.Response:
+    data = await request.json()
     words = data.get('words', '')
     print('words: ', words)
     if len(words) > 0:
-        sim_poems_dict = ap.similar_poems(words[:50], pm, w2v, topn=10, use_associations=False)  # <- [(p, s) ...]
+        sim_poems_dict = ap.similar_poems(words[:50], poems_model, w2v_model, topn=10, use_associations=False)  # <- [(p, s) ...]
         sim_poems = [spoem[0].replace('\n', '<br>') for spoem in sim_poems_dict]
         print(sim_poems)
         poems_json = json.dumps(sim_poems, separators=(',', ':'), ensure_ascii=False)
@@ -66,7 +65,7 @@ async def poems(request):
 
 
 async def error_middleware(app: web.Application, handler: Callable) -> Callable:
-    async def middleware_handler(request):
+    async def middleware_handler(request: web.Request):
         try:
             response = await handler(request=request)
             if response.status == 404:

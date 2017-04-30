@@ -83,9 +83,9 @@ if __name__ == "__main__":
         "иван семёныч дерзкий грубый\n брутальный весь такой мужик\n помадой нежно красит губы\n привык\n"
     )
 
-    w2v = sem.load_w2v_model(sem.WORD2VEC_MODEL_FILE)
-    pm = mpm.read_data_model("poems_model.dat")
+    w2v_model = sem.load_w2v_model(sem.WORD2VEC_MODEL_FILE)
+    poems_model = mpm.read_data_model("poems_model.dat")
     test_poem = random.choice(test_poems)
-    sim_poems = similar_poems(test_poem, pm, w2v)
+    sim_poems = similar_poems(test_poem, poems_model, w2v_model)
     print(test_poem)
     pprint(sim_poems)

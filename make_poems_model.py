@@ -130,10 +130,10 @@ def save_poems_to_file(poem_model, file_name):
 
 
 if __name__ == "__main__":
-    pm = make_poems_model("poems_33000.txt")
+    poems_model = make_poems_model("poems_33000.txt")
     # print(pm)
     pm_file = "poems_model_big.dat"
-    write_data_model(pm_file, pm)
+    write_data_model(pm_file, poems_model)
     print("model was saved to file '%s'" % pm_file)
     # print_poems_model(pm)
 
