@@ -1,4 +1,6 @@
 from aiohttp import web
+import aiohttp_cors
+from multidict import CIMultiDict
 import os
 import sys
 import json
@@ -29,20 +31,28 @@ class PoemsWebServer:
         self.pm = mpm.load_poems_model("poems_model_big.dat", self.w2v, vectorize=True)
 
     def setup_routes(self):
-        self.app.router.add_route('GET', '/', self.index)
-        self.app.router.add_route('POST', '/poems', self.poems)
+        # Configure default CORS (Cross-Origin Resource Sharing) settings.
+        cors = aiohttp_cors.setup(self.app, defaults={
+            "*": aiohttp_cors.ResourceOptions(
+                allow_credentials=True,
+                expose_headers="*",
+                allow_headers="*",
+            )
+        })
+
+        cors.add(self.app.router.add_route('GET', '/', self.index))
+        cors.add(self.app.router.add_route('POST', '/poems', self.poems))
 
     def setup_static(self):
         path = os.path.dirname(os.path.realpath(__file__)) + '/static/'
         # print(__file__, path)
-        # self.app.router.add_static('/css', path + 'css')
         self.app.router.add_static('/dist', path + 'dist')
         self.app.router.add_static('/css', path + 'css')
+
 
     def start_web_server(self):
         web.run_app(self.app, host=self.host, port=self.port)
 
-    # routed methods
 
     async def index(self, request):
         return web.FileResponse('./static/index.html')

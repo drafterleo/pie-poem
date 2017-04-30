@@ -6,7 +6,8 @@
                 <input id="search-edit"
                        class="w3-input w3-border w3-xlarge"
                        name="search"
-                       type="text">
+                       type="text"
+                       v-model="searchText">
                 <span id="search-btn"
                       class="material-icons w3-xxlarge"
                       @click="searchPoems()">search</span>
@@ -37,18 +38,37 @@
                       'пол утра не могу проснуться<br>' +
                       'и только вечером живу',
                 poems: [],
-                poemsCount: 10
+                poemsCount: 10,
+                searchText: ''
             }
         },
         components: {
             'app-poem-box': PoemBox
         },
         methods: {
-            searchPoems() {
+            searchPoems () {
+                console.log('searching: ' + this.searchText);
+                this.fetchPoems();
                 this.poems = [];
                 for (let i = 0; i < this.poemsCount; i++) {
                     this.poems.push(this.poem);
                 }
+            },
+            fetchPoems () {
+                console.log('fetching: ' + this.searchText);
+                let fetchData = {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        words: this.searchText
+                    }),
+                    headers: new Headers({
+                        'Content-Type': "application/x-www-form-urlencoded"
+                    })
+                };
+
+                fetch('http://127.0.0.1:8081/poems', fetchData)
+                    .then(response => response.json())
+                    .then(json => console.log(json))
             }
         }
     }
