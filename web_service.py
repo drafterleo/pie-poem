@@ -65,7 +65,7 @@ async def poems(request: web.Request) -> web.Response:
 
 
 async def error_middleware(app: web.Application, handler: Callable) -> Callable:
-    async def middleware_handler(request: web.Request):
+    async def middleware_handler(request: web.Request) -> web.FileResponse:
         try:
             response = await handler(request=request)
             if response.status == 404:
