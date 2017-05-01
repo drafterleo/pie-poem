@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <app-spinner v-if="showSpinner"></app-spinner>
+        <app-spinner v-show="showSpinner"></app-spinner>
 
         <div id="search-panel"
              class="w3-container w3-indigo w3-card-4 w3-center">
@@ -48,6 +48,11 @@
                 showSpinner: false
             }
         },
+        watch: {
+//            showSpinner: function (val) {
+//                console.log('showSpinner = ' + val);
+//            }
+        },
         components: {
             'app-poem-box': PoemBox,
             'app-spinner': Spinner
@@ -77,8 +82,8 @@
                     .then(data => {
                         this.poems = data;
                         this.showSpinner = false;
-                    })
-                    .catch(this.showSpinner = false)
+                    });
+
             }
         }
     }
