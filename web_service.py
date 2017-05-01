@@ -29,7 +29,7 @@ def load_models():
 def setup_routes(app: web.Application):
     # Configure default CORS (Cross-Origin Resource Sharing) settings.
     cors = aiohttp_cors.setup(app, defaults={
-        "http://127.0.0.1": aiohttp_cors.ResourceOptions(
+        "*": aiohttp_cors.ResourceOptions(
             allow_credentials=True,
             expose_headers="*",
             allow_headers="*",
