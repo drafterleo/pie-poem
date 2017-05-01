@@ -24,11 +24,15 @@
                 </div>
             </div>
         </div>
+
+        <app-spinner v-if="showSpinner"></app-spinner>
+
     </div>
 </template>
 
 <script>
     import PoemBox from './Components/PoemBox.vue'
+    import Spinner from './Components/Spinner.vue'
 
     export default {
         name: 'app',
@@ -40,11 +44,13 @@
                       'и только вечером живу',
                 poems: [],
                 poemsCount: 10,
-                searchText: ''
+                searchText: '',
+                showSpinner: false
             }
         },
         components: {
-            'app-poem-box': PoemBox
+            'app-poem-box': PoemBox,
+            'app-spinner': Spinner
         },
         methods: {
             genPoems () {
@@ -64,9 +70,15 @@
                     })
                 };
 
+                this.showSpinner = true;
+
                 fetch('/poems', fetchData)
                     .then(response => response.json())
-                    .then(data => this.poems = data)
+                    .then(data => {
+                        this.poems = data;
+                        this.showSpinner = false;
+                    })
+                    .catch(this.showSpinner = false)
             }
         }
     }
