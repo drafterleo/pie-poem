@@ -15,11 +15,14 @@
 
 <style>
     .spinner {
-        margin: 100px auto;
+        position: absolute;
+        top: 10px;
+        left: 10px;
         width: 50px;
         height: 40px;
         text-align: center;
         font-size: 10px;
+        z-index: 2000;
     }
 
     .spinner > div {
