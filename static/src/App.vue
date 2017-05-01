@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <app-spinner></app-spinner>
+        <app-spinner v-if="showSpinner"></app-spinner>
 
         <div id="search-panel"
              class="w3-container w3-indigo w3-card-4 w3-center">
@@ -45,7 +45,7 @@
                 poems: [],
                 poemsCount: 10,
                 searchText: '',
-                showSpinner: true
+                showSpinner: false
             }
         },
         components: {
