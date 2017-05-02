@@ -1,5 +1,5 @@
 <template>
-    <div class="poem-box w3-card">
+    <div class="issue-box w3-card">
         <slot></slot>
     </div>
 </template>
@@ -10,10 +10,10 @@
 </script>
 
 <style scoped>
-    .poem-box {
+    .issue-box {
         /*display: inline-block;*/
         width: 400px;
         margin: 5px auto;
-        background: #FFF3CD;
+        background: #ffb8ad;
     }
 </style>

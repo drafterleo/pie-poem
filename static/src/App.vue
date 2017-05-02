@@ -17,12 +17,23 @@
             </div>
         </div>
 
+
         <div id="poems-panel">
             <div class="w3-container w3-center">
                 <div class="w3-row">
-                    <app-poem-box v-for="ipoem in poems" :key="ipoem">
+
+                    <issue-box v-if="showNoPoemsFetched">
+                        <p class="w3-large issue-text">Ни одного нормального слова!</p>
+                    </issue-box>
+
+                    <issue-box v-if="showError">
+                        <p class="w3-large issue-text">Ошибка сервера!</p>
+                    </issue-box>
+
+                    <app-poem-box v-for="ipoem in poems" :key="ipoem" v-if="showFetchedPoems">
                         <p v-html="ipoem" class="w3-large poem-text"></p>
                     </app-poem-box>
+
                 </div>
             </div>
         </div>
@@ -32,10 +43,16 @@
 
 <script>
     import PoemBox from './Components/PoemBox.vue'
+    import IssueBox from './Components/IssueBox.vue'
     import Spinner from './Components/Spinner.vue'
 
     export default {
         name: 'app',
+        components: {
+            'app-poem-box': PoemBox,
+            'issue-box': IssueBox,
+            'app-spinner': Spinner
+        },
         data () {
             return {
                 poem: 'полдня пытаюсь поработать<br>' +
@@ -45,17 +62,18 @@
                 poems: [],
                 poemsCount: 10,
                 searchText: '',
-                showSpinner: false
+                fetchStarted: false,
+                showSpinner: false,
+                showFetchedPoems: false,
+                showNoPoemsFetched: false,
+                showError: false,
+                errorText: ''
             }
         },
         watch: {
 //            showSpinner: function (val) {
 //                console.log('showSpinner = ' + val);
 //            }
-        },
-        components: {
-            'app-poem-box': PoemBox,
-            'app-spinner': Spinner
         },
         methods: {
             genPoems () {
@@ -65,6 +83,10 @@
                 }
             },
             fetchPoems () {
+                if (this.fetchStarted) {
+                    return;
+                }
+
                 let fetchData = {
                     method: 'POST',
                     body: JSON.stringify({
@@ -76,14 +98,35 @@
                 };
 
                 this.showSpinner = true;
+                this.showNoPoemsFetched = false;
+                this.showError = false;
 
-                fetch('/poems', fetchData)
+                let poemsUrl = '/poems';
+                //let poemsUrl = 'http://192.168.135.135:8085/poems';
+
+                this.fetchStarted = true;
+                fetch(poemsUrl, fetchData)
                     .then(response => response.json())
                     .then(data => {
-                        this.poems = data;
+                        window.scrollTo(0, 0);
                         this.showSpinner = false;
+                        this.poems = data;
+                        if (this.poems.length > 0) {
+                            this.showFetchedPoems = true;
+                        } else {
+                            this.showFetchedPoems = false;
+                            this.showNoPoemsFetched = true;
+                        }
+                        this.fetchStarted = false;
+                    })
+                    .catch(error => {
+                        this.errorText = error.text;
+                        window.scrollTo(0, 0);
+                        this.showSpinner = false;
+                        this.showError = true;
+                        this.showFetchedPoems = false;
+                        this.fetchStarted = false;
                     });
-
             }
         }
     }
@@ -132,4 +175,10 @@
         text-align: left;
         padding: 0 10px;
     }
+
+    .issue-text {
+        text-align: center;
+        padding: 0 10px;
+    }
+
 </style>

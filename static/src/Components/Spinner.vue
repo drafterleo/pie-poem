@@ -14,7 +14,7 @@
 <style>
     .spinner {
         position: absolute;
-        top: 10px;
+        top: 15px;
         left: 10px;
         width: 50px;
         height: 40px;
@@ -24,7 +24,7 @@
     }
 
     .spinner > div {
-        background-color: #333;
+        background-color: #FFF;
         height: 100%;
         width: 6px;
         display: inline-block;
