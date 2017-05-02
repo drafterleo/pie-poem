@@ -10,8 +10,7 @@ import analyze_poem as ap
 
 from typing import Callable
 
-# curl -X POST -d "words=%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81" localhost:8081/poems
-# curl -X POST --data-urlencode "words=запрос" localhost:8081
+# curl -X POST -H "Content-Type: application/json" -d "{ \"words\": \"запрос\" }" 87.117.9.189:8085/poems
 
 w2v_model = None
 poems_model = None
