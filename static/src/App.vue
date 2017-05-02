@@ -10,7 +10,8 @@
                        name="search"
                        type="text"
                        v-model="searchText"
-                       @keyup.enter="fetchPoems()">
+                       @keyup.enter="fetchPoems()"
+                       autofocus>
                 <span id="search-btn"
                       class="material-icons w3-xxlarge"
                       @click="fetchPoems()">search</span>
