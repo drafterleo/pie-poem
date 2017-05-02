@@ -83,7 +83,7 @@ def start_web_server():
     load_models()
     setup_routes(app)
     setup_static(app)
-    web.run_app(app, host='0.0.0.0', port=8081)
+    web.run_app(app, host='0.0.0.0', port=8881)
 
 
 if __name__ == "__main__":
