@@ -13,7 +13,7 @@
 
 <style>
     .spinner {
-        position: absolute;
+        position: fixed;
         top: 15px;
         left: 10px;
         width: 50px;
