@@ -18,18 +18,25 @@
             </div>
         </div>
 
-
         <div id="poems-panel">
             <div class="w3-container w3-center">
                 <div class="w3-row">
 
-                    <issue-box v-if="showNoPoemsFetched">
-                        <p class="w3-large issue-text">Ни одного нормального слова!</p>
-                    </issue-box>
+                    <app-message-box v-if="showStartMessage">
+                        <p class="w3-large message-text">
+                            Для получения "смыслового эффекта" желательно вводить<br>
+                            достаточно редкие, нетипичные слова.<br>
+                            Например: аллюзия, лекало, трензнель (можно все сразу).
+                        </p>
+                    </app-message-box>
 
-                    <issue-box v-if="showError">
+                    <app-issue-box v-if="showNoPoemsFetched">
+                        <p class="w3-large issue-text">Ни одного нормального слова!</p>
+                    </app-issue-box>
+
+                    <app-issue-box v-if="showError">
                         <p class="w3-large issue-text">Ошибка сервера!</p>
-                    </issue-box>
+                    </app-issue-box>
 
                     <app-poem-box v-for="ipoem in poems" :key="ipoem" v-if="showFetchedPoems">
                         <p v-html="ipoem" class="w3-large poem-text"></p>
@@ -43,6 +50,7 @@
 </template>
 
 <script>
+    import MessageBox from './Components/MessageBox.vue'
     import PoemBox from './Components/PoemBox.vue'
     import IssueBox from './Components/IssueBox.vue'
     import Spinner from './Components/Spinner.vue'
@@ -50,9 +58,10 @@
     export default {
         name: 'app',
         components: {
-            'app-poem-box': PoemBox,
-            'issue-box': IssueBox,
-            'app-spinner': Spinner
+            'app-poem-box'   : PoemBox,
+            'app-issue-box'  : IssueBox,
+            'app-message-box': MessageBox,
+            'app-spinner'    : Spinner
         },
         data () {
             return {
@@ -64,6 +73,7 @@
                 poemsCount: 10,
                 searchText: '',
                 fetchStarted: false,
+                showStartMessage: true,
                 showSpinner: false,
                 showFetchedPoems: false,
                 showNoPoemsFetched: false,
@@ -112,6 +122,7 @@
                     .then(data => {
                         window.scrollTo(0, 0);
                         this.showSpinner = false;
+                        this.showStartMessage = false;
                         this.poems = data;
                         if (this.poems.length > 0) {
                             this.showFetchedPoems = true;
@@ -124,6 +135,7 @@
                     .catch(error => {
                         this.errorText = error.text;
                         window.scrollTo(0, 0);
+                        this.showStartMessage = false;
                         this.showSpinner = false;
                         this.showError = true;
                         this.showFetchedPoems = false;
@@ -173,14 +185,8 @@
         width: 100%;
     }
 
-    .poem-text {
+    .poem-text .issue-text .message-text {
         text-align: left;
         padding: 0 10px;
     }
-
-    .issue-text {
-        text-align: center;
-        padding: 0 10px;
-    }
-
 </style>
