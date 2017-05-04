@@ -185,12 +185,12 @@
         width: 100%;
     }
 
-    .poem-text, .issue-text {
+    .poem-text {
         text-align: left;
         padding: 0 10px;
     }
 
-    .message-text {
+    .message-text, .issue-text {
         text-align: center;
         padding: 0 10px;
     }
