@@ -185,8 +185,14 @@
         width: 100%;
     }
 
-    .poem-text .issue-text .message-text {
+    .poem-text, .issue-text {
         text-align: left;
         padding: 0 10px;
     }
+
+    .message-text {
+        text-align: center;
+        padding: 0 10px;
+    }
+
 </style>
