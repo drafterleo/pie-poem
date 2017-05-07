@@ -8,16 +8,28 @@ WORD2VEC_MODEL_FILE = 'C:/TEMP/data/ruscorpora.model.bin.gz'
 
 morph_analyzer = pymorphy2.MorphAnalyzer()
 
+grammar_map_MY_STEM = {
+    'NOUN': '_S',
+    'VERB': '_V', 'INFN': '_V', 'GRND': '_V', 'PRTF': '_V', 'PRTS': '_V',
+    'ADJF': '_A', 'ADJS': '_A',
+    'ADVB': '_ADV',
+    'PRED': '_PRAEDIC'
+}
+
+grammar_map_POS_TAGS =  {
+    'NOUN': '_NOUN',
+    'VERB': '_VERB', 'INFN': '_VERB', 'GRND': '_VERB', 'PRTF': '_VERB', 'PRTS': '_VERB',
+    'ADJF': '_ADJ', 'ADJS': '_ADJ',
+    'ADVB': '_ADV',
+    'PRED': '_ADP'
+}
+
+
 # http://textmechanic.com/text-tools/basic-text-tools/remove-duplicate-lines/
 # http://www.codeisart.ru/blog/python-shingles-algorithm/
-def canonize_words(words: list) -> list:
+def canonize_words(words: list, grammar_map: dict = grammar_map_MY_STEM) -> list:
     stop_words = ('быть', 'мой', 'наш', 'ваш', 'их', 'его', 'её', 'их',
                   'этот', 'тот', 'где', 'который', 'либо', 'нибудь', 'нет', 'да')
-    grammars = {'NOUN': '_S',
-                'VERB': '_V', 'INFN': '_V', 'GRND': '_V', 'PRTF': '_V', 'PRTS': '_V',
-                'ADJF': '_A', 'ADJS': '_A',
-                'ADVB': '_ADV',
-                'PRED': '_PRAEDIC'}
 
     normalized = []
     for w in words:
@@ -32,7 +44,7 @@ def canonize_words(words: list) -> list:
                 or 'UNKN' in form.tag
                 or form.normal_form in stop_words):  # 'ADJF'
             norm_word = form.normal_form.replace("ё", "е")
-            normalized.append(norm_word + grammars.get(form.tag.POS, ''))
+            normalized.append(norm_word + grammar_map.get(form.tag.POS, ''))
     return normalized
 
 
