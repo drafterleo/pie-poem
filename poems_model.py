@@ -2,6 +2,7 @@ import pymorphy2
 from gensim.models import KeyedVectors
 import logging
 import numpy as np
+import heapq
 import pickle
 
 grammar_map_MY_STEM = {
@@ -20,6 +21,16 @@ grammar_map_POS_TAGS =  {
     'PRED': '_ADP'
 }
 
+
+def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
+    return np.sum(np.dot(mx1, mx2.T)) if len(mx1) > 0 and len(mx2) > 0 else 0.0
+
+
+def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
+    return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
+        if len(mx1) > 0 and len(mx2) > 0 else 0.0
+
+
 class PoemsModel:
     morph_analyzer = pymorphy2.MorphAnalyzer()
 
@@ -27,9 +38,9 @@ class PoemsModel:
         self.w2v = KeyedVectors()
 
         self.poems = []            # [str, str, ...]
-        self.bags = []             #
+        self.bags = []             # [[str, str, ...], ...]
         self.vocab = {}            # {word: count, ...}
-        self.associations = []     # [list, list, ...]
+        self.matrices = []         # [np.ndarray, ...]
 
         self.grammar_map = grammar_map_POS_TAGS
 
@@ -39,6 +50,7 @@ class PoemsModel:
             self.read(poems_model_file)
 
     def load_w2v_model(self, file_name: str):
+        print("loading w2v_model...")
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         self.w2v = KeyedVectors.load_word2vec_format(file_name, binary=True, encoding='utf-8')
         print("word2vec model '%s' loaded" % file_name)
@@ -72,6 +84,15 @@ class PoemsModel:
             print('empty association for bag:', bag)
             return ['пустота_S']
 
+    def bag_to_matrix(self, bag: list):
+        mx = []
+        for i in range(len(bag)):
+            try:
+                mx.append(self.w2v[bag[i]])
+            except:
+                pass
+        return np.vstack(mx) if len(mx) > 0 else np.array([])
+
     def read_poems(self, file_name: str):
         file = open(file_name, encoding='utf-8')
         lines = file.readlines()
@@ -99,23 +120,25 @@ class PoemsModel:
         return bags, vocabulary
 
     def compile(self, poems_file: str, w2v_file: str):
-        print("making poems model...")
         self.read_poems(poems_file)
         print('poem count:', len(self.poems))
+        print('making word bags...')
         self.bags, self.vocab = self.make_bags(self.poems)
-        print("loading w2v_model...")
         self.load_w2v_model(w2v_file)
-        print("adding semantics to model...")
-        self.associations = [self.semantic_associations(bag) for bag in self.bags]
         print("model is compiled")
 
     def read(self, file_name: str):
         with open(file_name, mode='rb') as file:
+            print('reading pickle poems model...')
             data = pickle.load(file)
             self.poems = data['poems']
             self.bags = data['bags']
             self.vocab = data['vocab']
-            self.associations = data['associations']
+
+            print("vectorizing model...")
+            self.matrices = [self.bag_to_matrix(bag) for bag in self.bags]
+
+            print('model is loaded')
 
     def write(self, file_name: str):
         with open(file_name, mode='wb') as file:
@@ -123,6 +146,20 @@ class PoemsModel:
                 'poems': self.poems,
                 'bags': self.bags,
                 'vocab': self.vocab,
-                'associations': self.associations
             }
             pickle.dump(data, file)
+
+    def similar_poems_idx(self, query: str, topn=5) -> list:  # [(poem_idx, sim)]
+        query_bag = self.canonize_words(query.split())
+        query_mx = self.bag_to_matrix(query_bag)
+        if len(query_mx) == 0:
+            return []
+        similars = [(i, semantic_similarity_fast_log(query_mx, mx))
+                    for i, mx in enumerate(self.matrices)]
+        # similars.sort(key=lambda x: x[1], reverse=True)
+        return heapq.nlargest(topn, similars, key=lambda x: x[1])
+
+    def similar_poems(self, query: str, topn=5) -> list:  # [(poem, sim)]
+        return [(self.poems[idx], sim)
+                for idx, sim in self.similar_poems_idx(query, topn)]
+
