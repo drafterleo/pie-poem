@@ -14,6 +14,6 @@
         /*display: inline-block;*/
         width: 450px;
         margin: 5px auto;
-        background: #FFF3CD;
+        background: #fff9d8;
     }
 </style>
