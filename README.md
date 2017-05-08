@@ -1,7 +1,7 @@
 
 Необходимы [pymorphy2](https://pymorphy2.readthedocs.org/en/latest/) и [gensim](https://radimrehurek.com/gensim/)
 
-Создать экземпляр PoemsModel и загрузить модели.
+Создать экземпляр PoemsModel и загрузить модели.<br>
 Word2vec модель скачивал отсюда: http://rusvectores.org/ru/models/
 ```python
 from poems_model import PoemsModel
