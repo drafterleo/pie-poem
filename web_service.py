@@ -5,25 +5,21 @@ import sys
 import json
 import mkl
 
-import semantics as sem
-import make_poems_model as mpm
-import analyze_poem as ap
+from poems_model import PoemsModel
 
 from typing import Callable
 
 # curl -X POST -H "Content-Type: application/json" -d "{ \"words\": \"запрос\" }" 87.117.9.189:8085/poems
 
-w2v_model = None
-poems_model = None
+pie_model = PoemsModel()
 
 
 def load_models():
-    global w2v_model, poems_model
+    data_path = "/data/"
     if sys.platform.startswith("win"):
-        w2v_model = sem.load_w2v_model("c:/data/ruscorpora.model.bin.gz")
-    else:
-        w2v_model = sem.load_w2v_model("/data/ruscorpora.model.bin.gz")
-    poems_model = mpm.load_poems_model("poems_model_big.dat", w2v_model, vectorize=True)
+        data_path = "c:/data/"
+    pie_model.load_w2v_model(data_path + "ruscorpora_1_300_10.bin.gz")
+    pie_model.read("poems_model_big.pickle")
 
 
 def setup_routes(app: web.Application):
@@ -55,7 +51,7 @@ async def poems(request: web.Request) -> web.StreamResponse:
     words = data.get('words', '')
     print('words: ', words)
     if len(words) > 0:
-        sim_poems_dict = ap.similar_poems(words[:50], poems_model, w2v_model, topn=10, use_associations=False)  # <- [(p, s) ...]
+        sim_poems_dict = pie_model.similar_poems(words[:50], topn=10)  # <- [(p, s) ...]
         sim_poems = [spoem[0].replace('\n', '<br>') for spoem in sim_poems_dict]
         print(sim_poems)
         poems_json = json.dumps(sim_poems, separators=(',', ':'), ensure_ascii=False)
@@ -81,7 +77,6 @@ async def error_middleware(app: web.Application, handler: Callable) -> Callable:
 def start_web_server():
     print('max threads:', mkl.get_max_threads())
     print('CPU frequency: ', mkl.get_cpu_frequency())
-    print('mem stat: ', mkl.mem_stat())
     app = web.Application(middlewares=[error_middleware])
     load_models()
     setup_routes(app)

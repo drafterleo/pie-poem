@@ -22,15 +22,6 @@ grammar_map_POS_TAGS =  {
 }
 
 
-def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
-    return np.sum(np.dot(mx1, mx2.T)) if len(mx1) > 0 and len(mx2) > 0 else 0.0
-
-
-def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
-    return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
-        if len(mx1) > 0 and len(mx2) > 0 else 0.0
-
-
 class PoemsModel:
     morph_analyzer = pymorphy2.MorphAnalyzer()
 
@@ -150,6 +141,14 @@ class PoemsModel:
             pickle.dump(data, file)
 
     def similar_poems_idx(self, query: str, topn=5) -> list:  # [(poem_idx, sim)]
+
+        def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
+            return np.sum(np.dot(mx1, mx2.T)) if len(mx1) > 0 and len(mx2) > 0 else 0.0
+
+        def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
+            return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / len(mx2) \
+                   if len(mx1) > 0 and len(mx2) > 0 else 0.0
+
         query_bag = self.canonize_words(query.split())
         query_mx = self.bag_to_matrix(query_bag)
         if len(query_mx) == 0:
