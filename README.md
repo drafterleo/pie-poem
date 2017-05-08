@@ -18,6 +18,6 @@ pm.similar_poems('иллюзия', topn=10)
 
 [Развёрнутый пример](https://github.com/drafterleo/pie-poem/blob/master/example.ipynb) в формате блокнота IPython. 
 
-[poems.csv](https://github.com/drafterleo/pie-poem/blob/master/poems.csv) - база [Поэтория](http://poetory.ru/) (любезно предоставил Иван Безденежных). Формат: [стишок, рейтинг]. 
+[poems-poetory.rar](https://github.com/drafterleo/pie-poem/blob/master/data/poems-poetory.rar) - база [Поэтория](http://poetory.ru/) (любезно предоставил Иван Безденежных). Формат: [стишок, рейтинг]. 
 
 

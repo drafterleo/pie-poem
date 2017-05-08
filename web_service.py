@@ -19,7 +19,7 @@ def load_models():
     if sys.platform.startswith("win"):
         data_path = "c:/data/"
     pie_model.load_w2v_model(data_path + "ruscorpora_1_300_10.bin.gz")
-    pie_model.read("poems_model_big.pickle")
+    pie_model.read("./data/poems_model_big.pickle")
 
 
 def setup_routes(app: web.Application):
