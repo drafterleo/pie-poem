@@ -12,7 +12,7 @@
 <style scoped>
     .poem-box {
         /*display: inline-block;*/
-        width: 400px;
+        width: 450px;
         margin: 5px auto;
         background: #FFF3CD;
     }
