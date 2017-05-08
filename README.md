@@ -8,6 +8,7 @@ from poems_model import PoemsModel
 
 poems_data = 'poems_model.pickle'
 w2v_file = 'c:/data/ruscorpora_1_300_10.bin.gz'
+
 pm = PoemsModel(poems_data, w2v_file)
 ```
 Сформулировать запрос:
