@@ -4,6 +4,7 @@ import logging
 import numpy as np
 import heapq
 import pickle
+import re
 
 grammar_map_MY_STEM = {
     'NOUN': '_S',
@@ -104,7 +105,8 @@ class PoemsModel:
         vocabulary = {}
         for txt in texts:
             bag = []  # {}
-            words = self.canonize_words(txt.split())
+            rtxt = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', txt)
+            words = self.canonize_words(rtxt.split())
             for w in words:
                 if w not in bag:
                     bag.append(w)  # bag[w] = bag.get(w, 0) + 1
@@ -151,6 +153,7 @@ class PoemsModel:
             return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / len(mx2) \
                    if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
+        query = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', query)
         query_bag = self.canonize_words(query.split())
         query_mx = self.bag_to_matrix(query_bag)
         if len(query_mx) == 0:
