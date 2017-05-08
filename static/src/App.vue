@@ -101,7 +101,7 @@
                 let fetchData = {
                     method: 'POST',
                     body: JSON.stringify({
-                        words: this.searchText.replace(/,|\.|!|\?|;|"|@|#|%|&|\*|\\|\/|:|\+'/gi, ' ').trim()
+                        words: this.searchText.replace(/,|\.|!|\?|;|"|@|#|%|&|\*|\\|\/|:|\+/gi, ' ').trim()
                     }),
                     headers: new Headers({
                         'Content-Type': "application/x-www-form-urlencoded"
