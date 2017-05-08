@@ -13,6 +13,8 @@ grammar_map_MY_STEM = {
     'PRED': '_PRAEDIC'
 }
 
+
+# https://github.com/akutuzov/universal-pos-tags
 grammar_map_POS_TAGS =  {
     'NOUN': '_NOUN',
     'VERB': '_VERB', 'INFN': '_VERB', 'GRND': '_VERB', 'PRTF': '_VERB', 'PRTS': '_VERB',
