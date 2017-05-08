@@ -105,8 +105,8 @@ class PoemsModel:
         vocabulary = {}
         for txt in texts:
             bag = []  # {}
-            rtxt = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', txt)
-            words = self.canonize_words(rtxt.split())
+            clear_txt = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', txt)  # remove punctuation
+            words = self.canonize_words(clear_txt.split())
             for w in words:
                 if w not in bag:
                     bag.append(w)  # bag[w] = bag.get(w, 0) + 1
@@ -114,12 +114,16 @@ class PoemsModel:
             bags.append(bag)
         return bags, vocabulary
 
-    def compile(self, poems_file: str, w2v_file: str):
-        self.read_poems(poems_file)
-        print('poem count:', len(self.poems))
+    def compile(self, poems_file: str = "", w2v_file: str = ""):
+        if poems_file:
+            self.read_poems(poems_file)
+            print('poem count:', len(self.poems))
+
         print('making word bags...')
         self.bags, self.vocab = self.make_bags(self.poems)
-        self.load_w2v_model(w2v_file)
+
+        if w2v_file:
+            self.load_w2v_model(w2v_file)
         print("model is compiled")
 
     def read(self, file_name: str):
@@ -153,8 +157,8 @@ class PoemsModel:
             return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / len(mx2) \
                    if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
-        query = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', query)
-        query_bag = self.canonize_words(query.split())
+        clear_query = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', query)  # remove punctuation
+        query_bag = self.canonize_words(clear_query.split())
         query_mx = self.bag_to_matrix(query_bag)
         if len(query_mx) == 0:
             return []

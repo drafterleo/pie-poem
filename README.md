@@ -6,7 +6,7 @@ Word2vec модель скачивал отсюда: http://rusvectores.org/ru/m
 ```python
 from poems_model import PoemsModel
 
-poems_data = 'poems_model.pickle'
+poems_data = './data/poems_model.pickle'
 w2v_file = 'c:/data/ruscorpora_1_300_10.bin.gz'
 
 pm = PoemsModel(poems_data, w2v_file)
