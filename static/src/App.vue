@@ -15,7 +15,8 @@
                 <!--<span id="search-btn"-->
                       <!--class="material-icons w3-xxlarge"-->
                       <!--@click="fetchPoems()">search</span>-->
-                <button class="w3-button w3-border w3-transparent w3-large w3-text-light-gray w3-hover-none w3-hover-text-white"
+                <button class="w3-button w3-border w3-transparent w3-large w3-hover-none w3-hover-text-white"
+                        style="color: #DDD"
                         @click="fetchPoems">Поиск</button>
             </div>
         </div>
