@@ -10,14 +10,14 @@
                        name="search"
                        type="text"
                        v-model="searchText"
-                       @keyup.enter="fetchPoems()"
+                       @keyup.enter="postPoemsRequest"
                        autofocus>
-                <!--<span id="search-btn"-->
-                      <!--class="material-icons w3-xxlarge"-->
-                      <!--@click="fetchPoems()">search</span>-->
-                <button class="w3-button w3-border w3-transparent w3-large w3-hover-none w3-hover-text-white"
-                        style="color: #DDD"
-                        @click="fetchPoems">Поиск</button>
+                <span id="search-btn"
+                      class="material-icons w3-xxlarge"
+                      @click="postPoemsRequest">search</span>
+                <!--<button class="w3-button w3-border w3-transparent w3-large w3-hover-none w3-hover-text-white"-->
+                        <!--style="color: #DDD"-->
+                        <!--@click="postPoemsRequest">Поиск</button>-->
             </div>
         </div>
 
@@ -118,6 +118,12 @@
                 let poemsUrl = '/poems';
                 //let poemsUrl = 'http://192.168.135.135:8085/poems';
                 //let poemsUrl = 'http://127.0.0.1:8085/poems';
+//
+//                let fetchData = JSON.stringify({
+//                    words: this.searchText.replace(/,|\.|!|\?|;|"|@|#|%|&|\*|\\|\/|:|\+/gi, ' ').trim()
+//                });
+//
+//                console.log(fetchData)
 
                 this.fetchStarted = true;
                 fetch(poemsUrl, fetchData)
@@ -144,6 +150,49 @@
                         this.showFetchedPoems = false;
                         this.fetchStarted = false;
                     });
+            },
+            postPoemsRequest() {
+                let postData = JSON.stringify({
+                    words: this.searchText.replace(/,|\.|!|\?|;|"|@|#|%|&|\*|\\|\/|:|\+/gi, ' ').trim()
+                });
+
+                this.showSpinner = true;
+                this.showNoPoemsFetched = false;
+                this.showError = false;
+
+                let poemsUrl = '/poems';
+                //let poemsUrl = 'http://192.168.135.135:8085/poems';
+                //let poemsUrl = 'http://127.0.0.1:8085/poems';
+
+                let xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(vue) {
+                    if (xhr.readyState != 4)
+                        return;
+                    if (xhr.status == 200) {
+                         window.scrollTo(0, 0);
+                        vue.showSpinner = false;
+                        vue.showStartMessage = false;
+                        vue.poems = JSON.parse(xhr.responseText);
+                        if (vue.poems.length > 0) {
+                            vue.showFetchedPoems = true;
+                        } else {
+                            vue.showFetchedPoems = false;
+                            vue.showNoPoemsFetched = true;
+                        }
+                        vue.fetchStarted = false;
+                    } else {
+                        vue.errorText = xhr.statusText;
+                        window.scrollTo(0, 0);vue.showStartMessage = false;
+                        vue.showSpinner = false;
+                        vue.showError = true;
+                        vue.showFetchedPoems = false;
+                        vue.fetchStarted = false;
+                    }
+                }.bind(xhr, this); // bind Vue instance to xhr.onreadystatechange
+
+                xhr.open("POST", poemsUrl, true);
+                xhr.setRequestHeader("Content-type", "application/json");
+                xhr.send(postData);
             }
         }
     }
