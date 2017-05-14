@@ -3,7 +3,7 @@ import aiohttp_cors  # https://github.com/aio-libs/aiohttp-cors
 import os
 import sys
 import json
-import mkl
+# import mkl
 
 from poems_model import PoemsModel
 
@@ -76,8 +76,8 @@ async def error_middleware(app: web.Application, handler: Callable) -> Callable:
 
 
 def start_web_server():
-    print('max threads:', mkl.get_max_threads())
-    print('CPU frequency: ', mkl.get_cpu_frequency())
+    # print('max threads:', mkl.get_max_threads())
+    # print('CPU frequency: ', mkl.get_cpu_frequency())
     app = web.Application(middlewares=[error_middleware])
     load_models()
     setup_routes(app)
