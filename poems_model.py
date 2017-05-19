@@ -100,12 +100,16 @@ class PoemsModel:
             else:
                 poem += line
 
+    @staticmethod
+    def remove_punctuation(text: str) -> str:
+        return re.sub(r""",|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+|-|'|\(|\)|\[|\]""", ' ', text)
+
     def make_bags(self, texts: list) -> (list, dict):
         bags = []
         vocabulary = {}
         for txt in texts:
             bag = []  # {}
-            clear_txt = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', txt)  # remove punctuation
+            clear_txt = self.remove_punctuation(txt)
             words = self.canonize_words(clear_txt.split())
             for w in words:
                 if w not in bag:
@@ -154,10 +158,10 @@ class PoemsModel:
             return np.sum(np.dot(mx1, mx2.T)) if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
         def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
-            return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / len(mx2) \
+            return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
                    if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
-        clear_query = re.sub(r',|\.|!|\?|;|"|@|#|%|&|\*|\\|/|:|\+', ' ', query)  # remove punctuation
+        clear_query = self.remove_punctuation(query)
         query_bag = self.canonize_words(clear_query.split())
         query_mx = self.bag_to_matrix(query_bag)
         if len(query_mx) == 0:
