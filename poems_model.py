@@ -152,21 +152,23 @@ class PoemsModel:
             }
             pickle.dump(data, file)
 
+    @staticmethod
+    def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
+        return np.sum(np.dot(mx1, mx2.T)) / (len(mx2) * len(mx1)) \
+               if len(mx1) > 0 and len(mx2) > 0 else 0.0
+
+    @staticmethod
+    def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
+        return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
+               if len(mx1) > 0 and len(mx2) > 0 else 0.0
+
     def similar_poems_idx(self, query: str, topn=5) -> list:  # [(poem_idx, sim)]
-
-        def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
-            return np.sum(np.dot(mx1, mx2.T)) if len(mx1) > 0 and len(mx2) > 0 else 0.0
-
-        def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
-            return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
-                   if len(mx1) > 0 and len(mx2) > 0 else 0.0
-
         clear_query = self.remove_punctuation(query)
         query_bag = self.canonize_words(clear_query.split())
         query_mx = self.bag_to_matrix(query_bag)
         if len(query_mx) == 0:
             return []
-        similars = [(i, semantic_similarity_fast_log(query_mx, mx))
+        similars = [(i, self.semantic_similarity_fast_log(query_mx, mx))
                     for i, mx in enumerate(self.matrices)]
         # similars.sort(key=lambda x: x[1], reverse=True)
         return heapq.nlargest(topn, similars, key=lambda x: x[1])
