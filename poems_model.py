@@ -16,7 +16,7 @@ grammar_map_MY_STEM = {
 
 
 # https://github.com/akutuzov/universal-pos-tags
-grammar_map_POS_TAGS =  {
+grammar_map_POS_TAGS = {
     'NOUN': '_NOUN',
     'VERB': '_VERB', 'INFN': '_VERB', 'GRND': '_VERB', 'PRTF': '_VERB', 'PRTS': '_VERB',
     'ADJF': '_ADJ', 'ADJS': '_ADJ',
@@ -76,7 +76,7 @@ class PoemsModel:
             return [a[0] for a in assoc_lst]
         else:
             print('empty association for bag:', bag)
-            return ['пустота_S']
+            return []
 
     def bag_to_matrix(self, bag: list):
         mx = []
