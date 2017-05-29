@@ -152,6 +152,11 @@ class PoemsModel:
             }
             pickle.dump(data, file)
 
+    def most_similar(self, positive="", negative="", topn=10):
+        pos_bag = self.canonize_words(positive.split())
+        neg_bag = self.canonize_words(negative.split())
+        return self.w2v.most_similar(pos_bag, neg_bag, topn) if len(positive) > 0 else ()
+
     @staticmethod
     def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
         return np.sum(np.dot(mx1, mx2.T)) / (len(mx2) * len(mx1)) \

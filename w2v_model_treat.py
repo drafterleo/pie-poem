@@ -95,6 +95,10 @@ def thin_w2vec_model(w2v_model: KeyedVectors):
 
 
 if __name__ == "__main__":
-    model = load_w2v_model("c:/data/ruscorpora.model.bin.gz")
+    # model = load_w2v_model("c:/data/ruscorpora.model.bin.gz")
+    # thin_w2vec_model(model)
+    # save_w2v_model('c:/data/ruscorpora.model.bin_thin.gz', model)
+
+    model = load_w2v_model("c:/data/ruscorpora_1_300_10.bin.gz")
     thin_w2vec_model(model)
-    save_w2v_model('c:/data/ruscorpora.model.bin_thin.gz', model)
+    save_w2v_model('c:/data/ruscorpora_1_300_10.bin.gz_thin', model)
