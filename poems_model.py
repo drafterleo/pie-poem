@@ -157,6 +157,28 @@ class PoemsModel:
         neg_bag = self.canonize_words(negative.split())
         return self.w2v.most_similar(pos_bag, neg_bag, topn) if len(positive) > 0 else ()
 
+    def semantic_levels(self, base_word: str, portions=[0.2, 0.3, 0.5], vocab_count=100) -> (dict, np.ndarray):
+        if base_word not in self.w2v.vocab:
+            return {}, []
+        levels = dict()
+        levels[0] = {base_word}
+        for level in range(1, len(portions) + 1):
+            levels[level] = set()
+        matrix = [self.w2v.word_vec(base_word)]
+
+        similars = self.w2v.most_similar(base_word, topn=vocab_count)
+
+        notch = 0
+        for level, portion in enumerate(portions):
+            next_notch = notch + int(vocab_count * portion)
+            for i in range(notch, next_notch):
+                word = similars[i][0]
+                levels[level+1].add(word)
+                matrix.append(self.w2v.word_vec(word) * (1 - portions[level]))
+            notch = next_notch
+
+        return levels, np.vstack(matrix)
+
     @staticmethod
     def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
         return np.sum(np.dot(mx1, mx2.T)) / (len(mx2) * len(mx1)) \
@@ -167,10 +189,12 @@ class PoemsModel:
         return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
                if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
-    def similar_poems_idx(self, query: str, topn=5) -> list:  # [(poem_idx, sim)]
-        clear_query = self.remove_punctuation(query)
-        query_bag = self.canonize_words(clear_query.split())
-        query_mx = self.bag_to_matrix(query_bag)
+    def similar_poems_idx(self, query, topn=5) -> list:  # [(poem_idx, sim)]
+        query_mx = query
+        if type(query) == str:
+            clear_query = self.remove_punctuation(query)
+            query_bag = self.canonize_words(clear_query.split())
+            query_mx = self.bag_to_matrix(query_bag)
         if len(query_mx) == 0:
             return []
         similars = [(i, self.semantic_similarity_fast_log(query_mx, mx))
@@ -178,7 +202,7 @@ class PoemsModel:
         # similars.sort(key=lambda x: x[1], reverse=True)
         return heapq.nlargest(topn, similars, key=lambda x: x[1])
 
-    def similar_poems(self, query: str, topn=5) -> list:  # [(poem, sim)]
+    def similar_poems(self, query, topn=5) -> list:  # [(poem, sim)]
         return [(self.poems[idx], sim)
                 for idx, sim in self.similar_poems_idx(query, topn)]
 

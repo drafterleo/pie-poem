@@ -101,4 +101,4 @@ if __name__ == "__main__":
 
     model = load_w2v_model("c:/data/ruscorpora_1_300_10.bin.gz")
     thin_w2vec_model(model)
-    save_w2v_model('c:/data/ruscorpora_1_300_10.bin.gz_thin', model)
+    save_w2v_model('c:/data/ruscorpora_1_300_10.bin.gz', model)
