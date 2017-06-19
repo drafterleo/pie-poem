@@ -181,12 +181,12 @@ class PoemsModel:
 
     @staticmethod
     def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
-        return np.sum(np.dot(mx1, mx2.T)) / (len(mx2) * len(mx1)) \
+        return np.sum(np.dot(mx1, mx2.T)) / (len(mx2) + len(mx1)) \
                if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
     @staticmethod
     def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
-        return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) * len(mx1)) \
+        return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) + len(mx1)) \
                if len(mx1) > 0 and len(mx2) > 0 else 0.0
 
     def similar_poems_idx(self, query, topn=5) -> list:  # [(poem_idx, sim)]
