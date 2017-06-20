@@ -5,6 +5,7 @@ import numpy as np
 import heapq
 import pickle
 import re
+from typing import Callable
 
 grammar_map_MY_STEM = {
     'NOUN': '_S',
@@ -43,7 +44,7 @@ class PoemsModel:
         if poems_model_file:
             self.read(poems_model_file)
 
-    def load_w2v_model(self, file_name: str):
+    def load_w2v_model(self, file_name: str) -> None:
         print("loading w2v_model...")
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         self.w2v = KeyedVectors.load_word2vec_format(file_name, binary=True, encoding='utf-8')
@@ -87,18 +88,20 @@ class PoemsModel:
                 pass
         return np.vstack(mx) if len(mx) > 0 else np.array([])
 
-    def read_poems(self, file_name: str):
+    @staticmethod
+    def read_poems(file_name: str) -> list:
         file = open(file_name, encoding='utf-8')
         lines = file.readlines()
-        self.poems = []
+        poems = []
         poem = ""
         for line in lines:
             if len(line.strip()) == 0:
                 if len(poem.strip()) > 0:
-                    self.poems.append(poem.lower())
+                    poems.append(poem.lower())
                     poem = ""
             else:
                 poem += line
+        return poems
 
     @staticmethod
     def remove_punctuation(text: str) -> str:
@@ -118,9 +121,14 @@ class PoemsModel:
             bags.append(bag)
         return bags, vocabulary
 
-    def compile(self, poems_file: str = "", w2v_file: str = ""):
+    def compile(self,
+                poems_file: str = "",
+                w2v_file: str = "",
+                poems_reader: Callable[[str], list]=None) -> None:
         if poems_file:
-            self.read_poems(poems_file)
+            if poems_reader is None:
+                poems_reader = self.read_poems
+            self.poems = poems_reader(poems_file)
             print('poem count:', len(self.poems))
 
         print('making word bags...')
@@ -130,7 +138,7 @@ class PoemsModel:
             self.load_w2v_model(w2v_file)
         print("model is compiled")
 
-    def read(self, file_name: str):
+    def read(self, file_name: str) -> None:
         with open(file_name, mode='rb') as file:
             print('reading pickle poems model...')
             data = pickle.load(file)
@@ -143,7 +151,7 @@ class PoemsModel:
 
             print('model is loaded')
 
-    def write(self, file_name: str):
+    def write(self, file_name: str) -> None:
         with open(file_name, mode='wb') as file:
             data = {
                 'poems': self.poems,
@@ -152,7 +160,7 @@ class PoemsModel:
             }
             pickle.dump(data, file)
 
-    def most_similar(self, positive="", negative="", topn=10):
+    def most_similar(self, positive="", negative="", topn=10) -> list:
         pos_bag = self.canonize_words(positive.split())
         neg_bag = self.canonize_words(negative.split())
         return self.w2v.most_similar(pos_bag, neg_bag, topn) if len(positive) > 0 else ()
