@@ -6,6 +6,7 @@ import heapq
 import pickle
 import re
 from typing import Callable
+import numba
 
 grammar_map_MY_STEM = {
     'NOUN': '_S',
@@ -188,14 +189,16 @@ class PoemsModel:
         return levels, np.vstack(matrix)
 
     @staticmethod
-    def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
-        return np.sum(np.dot(mx1, mx2.T)) / (len(mx2) + len(mx1)) \
-               if len(mx1) > 0 and len(mx2) > 0 else 0.0
+    @numba.jit
+    def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
+        return np.sum(np.dot(mx1, mx2.T)) * np.log10(mx2.size) / (mx2.size + mx1.size) \
+               if mx1.size > 0 and mx2.size > 0 else 0.0
 
     @staticmethod
-    def semantic_similarity_fast_log(mx1: np.ndarray, mx2: np.ndarray) -> float:
-        return np.sum(np.dot(mx1, mx2.T)) * np.log10(len(mx2)) / (len(mx2) + len(mx1)) \
-               if len(mx1) > 0 and len(mx2) > 0 else 0.0
+    @numba.jit
+    def semantic_similarity_fast(mx1: np.ndarray, mx2: np.ndarray) -> float:
+        return np.sum(np.dot(mx1, mx2.T)) / (mx2.size + mx1.size) \
+               if mx1.size > 0 and mx2.size > 0 else 0.0
 
     def similar_poems_idx(self, query, topn=5) -> list:  # [(poem_idx, sim)]
         query_mx = query
