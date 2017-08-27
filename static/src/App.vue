@@ -182,7 +182,8 @@
                         vue.fetchStarted = false;
                     } else {
                         vue.errorText = xhr.statusText;
-                        window.scrollTo(0, 0);vue.showStartMessage = false;
+                        window.scrollTo(0, 0);
+                        vue.showStartMessage = false;
                         vue.showSpinner = false;
                         vue.showError = true;
                         vue.showFetchedPoems = false;
