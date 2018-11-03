@@ -31,7 +31,8 @@ class PoemsModel:
     morph_analyzer = pymorphy2.MorphAnalyzer()
 
     def __init__(self, poems_model_file='', w2v_file=''):
-        self.w2v = KeyedVectors()
+        # self.w2v = KeyedVectors()
+        self.w2v = None
 
         self.poems = []            # [str, str, ...]
         self.bags = []             # [[str, str, ...], ...]
